@@ -140,7 +140,8 @@ export class AppStateService {
       dodge_count: this.dodgeCount(),
       questions_answers: { 
         answers: answers,
-        timeline: this.telemetry.getEvents() // Saves every click / dodge she ever performed
+        timeline: this.telemetry.getEvents(), // Saves every click / dodge she ever performed
+        device_info: this.telemetry.getDeviceInfo()
       },
       final_note: note,
       photo_url: this.uploadedPhotoUrl()

