@@ -1,0 +1,50 @@
+<div class="cuisine-container" [class.compact]="appState.currentStage() > 2">
+  <!-- Visual Back button (only shown when not compact/stacked in Stage 3) -->
+  @if (appState.currentStage() === 2) {
+    <button class="back-link-btn" (click)="appState.goBack()">
+      ← Back
+    </button>
+  }
+
+  <!-- Header -->
+  <h2 class="title">🍽️ What's on the menu for our first date?</h2>
+
+  
+  <!-- Apple-style Selection Cards Grid -->
+  <div class="cards-grid">
+    @for (c of cuisines; track c.name) {
+      <button 
+        class="cuisine-card"
+        [class.selected]="isSelected(c)"
+        [class.dimmed]="appState.selectedCuisine() !== '' && !isSelected(c)"
+        [disabled]="appState.currentStage() > 2"
+        (click)="selectCuisine(c)"
+      >
+        <div class="card-emoji">{{ c.emoji }}</div>
+        <div class="card-label">
+          @if (isSelected(c)) {
+            <span class="checkmark">✓ </span>
+          }
+          {{ c.name }}
+        </div>
+      </button>
+    }
+  </div>
+
+  <!-- Microcopy below the options -->
+  @if (appState.currentStage() === 2) {
+    <p class="microcopy">
+      Can't decide? Pick "Anything With You" and I'll happily eat whatever you choose ❤️
+    </p>
+  }
+
+  <!-- Dragon Comment Reaction Speech Bubble -->
+  @if (dragonReaction()) {
+    <div class="dragon-reaction-bubble" [class.compact-bubble]="appState.currentStage() > 2">
+      <div class="reaction-avatar">🐉</div>
+      <div class="reaction-content">
+        <div class="reaction-text">{{ dragonReaction() }}</div>
+      </div>
+    </div>
+  }
+</div>

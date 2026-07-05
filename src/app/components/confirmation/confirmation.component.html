@@ -1,0 +1,167 @@
+<div class="confirmation-container">
+  
+  @if (!noteSent()) {
+    <div class="questionnaire-card">
+      <div class="dragon-decor">🐉</div>
+
+      <!-- Step Indicator Dots (7 steps: 0-4 questions, 5 letter, 6 final note) -->
+      <div class="progress-bar-container">
+        <div class="progress-dots">
+          @for (step of [0, 1, 2, 3, 4, 5, 6]; track step) {
+            <span class="dot" [class.active]="step === currentStep()" [class.completed]="step < currentStep()"></span>
+          }
+        </div>
+        <span class="step-text">
+          @if (currentStep() < 5) {
+            Question {{ currentStep() + 1 }} of 5
+          } @else if (currentStep() === 5) {
+            Manish's Note ✉️
+          } @else {
+            Final Step 💌
+          }
+        </span>
+      </div>
+
+      <!-- Questionnaire Slider Content -->
+      <div class="questions-slider">
+        @if (currentStep() < 5) {
+          <!-- Active Question Card -->
+          <div class="question-card active-card">
+            <div class="question-header">
+              <span class="q-emoji">{{ questions[currentStep()].emoji }}</span>
+              <h2 class="q-text">{{ questions[currentStep()].text }}</h2>
+            </div>
+            
+            <div class="textarea-container">
+              <textarea
+                [id]="'q-input-' + currentStep()"
+                [placeholder]="'Type your thoughts here...'"
+                class="conf-textarea-input"
+                rows="5"
+                [(ngModel)]="questions[currentStep()].answer"
+              ></textarea>
+              <span class="textarea-corner-heart">♡</span>
+            </div>
+
+            <div class="navigation-controls">
+              @if (currentStep() > 0) {
+                <button class="nav-btn prev-btn" (click)="prevStep()">
+                  ⬅️ Back
+                </button>
+              } @else {
+                <div class="spacer-div"></div>
+              }
+              
+              <button 
+                class="nav-btn next-btn" 
+                [disabled]="!questions[currentStep()].answer.trim()" 
+                (click)="nextStep()"
+              >
+                Next ➡️
+              </button>
+            </div>
+          </div>
+        } @else if (currentStep() === 5) {
+          <!-- Step 7: Envelope Animation Container -->
+          <div class="envelope-step-container active-card">
+            <h2 class="envelope-step-title">✉️ Opening surprise note...</h2>
+            @if (showEnvelope()) {
+              <div 
+                class="envelope-wrapper" 
+                [class.float]="envelopeFloat()" 
+                [class.open]="envelopeOpen()"
+                [class.fade-out]="paperUnfold()"
+              >
+                <div class="envelope">
+                  <div class="envelope-flap"></div>
+                  <div class="envelope-body">
+                    <div class="dragon-stamp">🐉</div>
+                  </div>
+                  <div class="envelope-paper" [class.slide-out]="paperSlideOut()">
+                    <div class="folded-paper-lines"></div>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <!-- Step 8: Final Envelope Note Card -->
+          <div class="final-note-card active-card">
+            <div class="note-header">
+              <span class="envelope-emoji">✉️</span>
+              <span class="note-main-label">Before you go... leave me a little note? 💜</span>
+            </div>
+            <p class="note-subtext-1">Say something you'll smile reading again someday.</p>
+            <p class="note-subtext-2">Your thoughts are safe with me. ✨</p>
+            
+            <div class="textarea-container">
+              <textarea 
+                id="conf-note-input"
+                #noteInput
+                placeholder="Tell me something you've never said to me..."
+                class="conf-textarea-input"
+                rows="5"
+              ></textarea>
+              <span class="textarea-corner-heart">♡</span>
+            </div>
+            
+            <div class="navigation-controls">
+              <button class="nav-btn prev-btn" (click)="prevStep()">
+                ⬅️ Back
+              </button>
+              
+              <button class="send-note-btn" (click)="submitAll(noteInput.value)">
+                Send & run 💌 okay?.
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Unfolded Letter Card (global overlay, visible when paper unfolds) -->
+    @if (paperUnfold()) {
+      <div class="letter-card-overlay visible">
+        <div class="letter-seal-inside">💌</div>
+        
+        <div class="letter-scroll-area">
+          <div class="typed-text-container">
+            @for (para of typedParagraphs(); track $index) {
+              <p class="handwritten-para">
+                {{ para }}<span class="blinking-cursor" *ngIf="isTyping() && currentTypingParaIndex() === $index">|</span>
+              </p>
+            }
+          </div>
+          
+          <div class="letter-signature" [class.visible]="showSignature()">
+            <p class="signature-line">— Yours,</p>
+            <p class="signature-line name">Manish 🐉</p>
+          </div>
+        </div>
+
+        <!-- Controls at the bottom of the card -->
+        <div class="letter-controls">
+          @if (isTyping()) {
+            <button class="skip-btn" (click)="skipTyping()">
+              Skip Typing ⚡
+            </button>
+          }
+
+          @if (showSignature() && !isTyping()) {
+            <button class="proceed-btn" (click)="proceedFromLetter()">
+              Continue ➡️
+            </button>
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <div class="note-sent-feedback">
+      <span class="heart-pulse">💖</span> Message sent to the dragon!
+    </div>
+  }
+
+  <button class="restart-btn" (click)="restart()">
+    Plan Again 🔄
+  </button>
+</div>

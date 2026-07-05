@@ -1,0 +1,33 @@
+<main class="app-layout">
+  <!-- Dynamic stage container with smooth animations -->
+  <div class="stage-container">
+    @switch (appState.currentStage()) {
+      @case (0) {
+        <app-intro></app-intro>
+      }
+      @case (1) {
+        <app-proposal-card></app-proposal-card>
+      }
+      @case (2) {
+        <app-cuisine-picker></app-cuisine-picker>
+      }
+      @case (3) {
+        <div class="combined-picker-form">
+          <app-cuisine-picker></app-cuisine-picker>
+          <app-date-place-form></app-date-place-form>
+        </div>
+      }
+      @case (4) {
+        <app-journey-checkpoint></app-journey-checkpoint>
+      }
+      @case (5) {
+        <app-confirmation></app-confirmation>
+      }
+    }
+  </div>
+
+  <!-- Heart Burst animation overlay -->
+  @if (appState.showHeartBurst()) {
+    <app-heart-burst></app-heart-burst>
+  }
+</main>

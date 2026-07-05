@@ -1,0 +1,39 @@
+<div class="intro-container">
+
+
+  <!-- Distance Map Visualizer -->
+  <div class="distance-map">
+    <div class="node left">
+      <span class="emoji" role="img" aria-label="dragon">🐉</span>
+    </div>
+    <div class="path-container">
+      <svg class="dotted-path" width="100%" height="20">
+        <line x1="0" y1="10" x2="100%" y2="10" stroke="#D4A72C" stroke-width="2" stroke-dasharray="6, 6" />
+        <!-- Pulse/Indicator that flows along the dotted path -->
+        <circle class="pulse-glow" r="5" fill="#D4A72C">
+          <animate attributeName="cx" from="0%" to="100%" dur="3s" repeatCount="indefinite" />
+        </circle>
+      </svg>
+    </div>
+    <div class="node right">
+      <span class="emoji" role="img" aria-label="wolf">🐺</span>
+    </div>
+  </div>
+
+  <div class="distance-counter">
+    {{ currentDistance() | number }} KM APART
+  </div>
+
+  <h1 class="headline">the dragon wants to cross the distance for the wolf</h1>
+  
+  <p class="subtext">
+    Soo.. I'm currently listening to a song on loop that says this... 😭🫶
+    <span class="lyric-highlight">"Tu ja apne mehboob nu ajj Izhaar taan karke aa 🩶"</span>
+    ...and I thought of asking you something like this: 😭😂
+    <!-- <span class="ask-highlight">Akriti, will you go on a date with me? 🐺❤️🐉</span> -->
+  </p>
+
+  <button class="proceed-btn" (click)="nextStage()">
+    Open Dragon's Letter 💌
+  </button>
+</div>

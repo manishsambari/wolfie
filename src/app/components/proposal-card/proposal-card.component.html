@@ -1,0 +1,46 @@
+<div class="full-screen-wrapper" #cardContainer>
+  <!-- Floating background emojis -->
+  <div class="ambient-emoji-container">
+    @for (emoji of ambientEmojis(); track emoji.id) {
+      <span 
+        class="ambient-emoji" 
+        [style.left]="emoji.left" 
+        [style.animation-delay]="emoji.delay" 
+        [style.animation-duration]="emoji.duration">
+        {{ emoji.char }}
+      </span>
+    }
+  </div>
+
+  <!-- Visual Back button -->
+  <button class="back-link-btn" (click)="appState.goBack()">
+    ← Back
+  </button>
+
+  <!-- Overlay Content -->
+  <div class="text-content">
+    <div class="heart-icon" role="img" aria-label="heart">💖</div>
+    <h2 class="title">Akriti, will you go on a date with me?</h2>
+
+    <p class="lyric-quote">
+      "We've shared so many moments... just not the same place yet. ❤️"
+    </p>
+  </div>
+
+  <!-- Buttons floating on entire screen space -->
+  <button 
+    class="yes-btn" 
+    (click)="onYesClick()">
+    Yes, let's go 😩🐺🐉
+  </button>
+
+  <button 
+    class="no-btn" 
+    #noButton
+    [style.left]="noLeft()"
+    [style.top]="noTop()"
+    (touchstart)="onNoTouchStart($event)"
+    (click)="onNoClick()">
+    {{ noButtonText() }}
+  </button>
+</div>

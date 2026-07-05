@@ -1,0 +1,157 @@
+<div class="form-container">
+  <!-- Visual Back button (only shown when not loading) -->
+  @if (!isClosingIn()) {
+    <button class="back-link-btn" (click)="appState.goBack()">
+      ← Back
+    </button>
+  }
+
+  <!-- Pinned Distance Counter / Adventure Prep card -->
+  @if (!isClosingIn()) {
+    <div class="pinned-map">
+      <div class="nodes-container">
+        <div class="map-node">
+          <span class="node-emoji">🐉</span>
+          <span class="node-label">Mumbai</span>
+        </div>
+        <div class="path-visual">
+          <svg class="map-path" width="100%" height="20">
+            <line x1="0" y1="10" x2="100%" y2="10" stroke="#D4A72C" stroke-width="2" stroke-dasharray="6, 6" />
+          </svg>
+        </div>
+        <div class="map-node">
+          <span class="node-emoji">🐺</span>
+          <span class="node-label">Shimla</span>
+        </div>
+      </div>
+      
+      <div class="distance-value">
+        1,400 KM APART
+      </div>
+    </div>
+  } @else {
+    <div class="adventure-prep-card">
+      <div class="prep-visuals">
+        @if (prepStep() === 1) {
+          <div class="prep-item anim-bounce">🐉🧳✈️</div>
+        }
+        @if (prepStep() === 2) {
+          <div class="prep-item anim-pulse">🛂📅🎫</div>
+        }
+        @if (prepStep() === 3) {
+          <div class="prep-item anim-backpack">🐉🎒✨</div>
+        }
+        @if (prepStep() === 4) {
+          <div class="prep-item anim-zoom">🛫🏔️💖</div>
+        }
+      </div>
+      
+      <div class="prep-status-text">
+        {{ prepText() }}
+      </div>
+      
+      <div class="prep-progress-bar">
+        <div class="progress-fill" [style.width.%]="prepStep() * 25"></div>
+      </div>
+    </div>
+  }
+
+  <!-- Form Details -->
+  <form [formGroup]="datePlaceForm" (ngSubmit)="onConfirm()" class="ask-form">
+    <h3 class="form-title">❤️ Your Date, Your Rules</h3>
+    
+    <div class="form-group">
+      <label for="place-input">📍Where do you want to go?</label>
+      <input 
+        id="place-input"
+        type="text" 
+        formControlName="place" 
+        placeholder="you choose the spot"
+        class="text-input"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label>Pick the day — I'll be there</label>
+      
+      <!-- Custom visual button trigger instead of browser input -->
+      <div 
+        class="custom-date-trigger" 
+        (click)="toggleCalendar()" 
+        [class.active]="calendarOpen()"
+        [class.has-value]="selectedDateVal()">
+        <span class="date-trigger-icon">🗓️</span>
+        <span class="date-trigger-val">
+          {{ selectedDateFormatted() || 'Choose a day' }}
+        </span>
+        <span class="date-trigger-arrow">{{ calendarOpen() ? '▲' : '▼' }}</span>
+      </div>
+
+      <!-- Custom Elegant Calendar Popup Card -->
+      @if (calendarOpen()) {
+        <div class="calendar-card-picker">
+          <div class="calendar-header">
+            <button type="button" class="cal-nav-btn" (click)="prevMonth()">◀</button>
+            
+            <div class="calendar-dropdowns">
+              <select class="cal-select" [value]="viewedMonth()" (change)="onMonthChange($event)">
+                @for (m of monthsList; track $index) {
+                  <option [value]="$index">{{ m }}</option>
+                }
+              </select>
+              
+              <select class="cal-select" [value]="viewedYear()" (change)="onYearChange($event)">
+                @for (y of yearsList; track y) {
+                  <option [value]="y">{{ y }}</option>
+                }
+              </select>
+            </div>
+            
+            <button type="button" class="cal-nav-btn" (click)="nextMonth()">▶</button>
+          </div>
+          
+          <div class="calendar-weekdays">
+            @for (day of weekdays; track day) {
+              <div class="cal-weekday">{{ day }}</div>
+            }
+          </div>
+          
+          <div class="calendar-days-grid">
+            @for (day of calendarDays(); track $index) {
+              @if (day.date === null) {
+                <div class="cal-day empty"></div>
+              } @else {
+                <button 
+                  type="button"
+                  class="cal-day-btn" 
+                  [class.past]="day.isPast"
+                  [class.selected]="day.isSelected"
+                  [disabled]="day.isPast"
+                  (click)="selectDate(day.date)">
+                  {{ day.label }}
+                </button>
+              }
+            }
+          </div>
+        </div>
+      }
+      
+      <small class="helper-text">
+        *This is the day the dragon will travel from Mumbai to see Akriti in Shimla.
+      </small>
+    </div>
+
+    <button 
+      type="submit" 
+      class="confirm-btn" 
+      [disabled]="datePlaceForm.invalid || isClosingIn()"
+      [class.loading]="isClosingIn()">
+      @if (isClosingIn()) {
+        <span class="loading-spinner">⏳</span> Preparing plans...
+      } @else {
+        Confirm Date & Spot 💖
+      }
+    </button>
+  </form>
+</div>

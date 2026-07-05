@@ -1,0 +1,172 @@
+<div class="journey-container">
+  
+  @if (!quizStarted()) {
+    <!-- Step 0: Ready Stage showing Chosen Details first -->
+    <div class="intro-quiz-wrapper">
+      <div class="dragon-accent">🐉</div>
+      
+      <!-- Cuisine, Spot, and Date Summary Card -->
+      <div class="summary-card">
+        <h3 class="summary-title">Adventure Details</h3>
+        
+        <div class="summary-row">
+          <span class="summary-label">Cuisine Chosen</span>
+          <span class="summary-value">{{ appState.selectedCuisine() }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span class="summary-label">Meeting Spot</span>
+          <span class="summary-value">{{ appState.place() }}</span>
+        </div>
+
+        <div class="summary-row">
+          <span class="summary-label">The Big Day</span>
+          <span class="summary-value">{{ appState.selectedDate() | date:'EEEE, MMMM d, y' }}</span>
+        </div>
+      </div>
+
+      <!-- Surprise Note Prompt -->
+      <div class="ready-box">
+        <span class="envelope-emoji-pulse">✉️</span>
+        <h2 class="ready-title">There is a surprise note for you...</h2>
+        <p class="ready-subtitle">
+          But before that, let's see how well you know us! You'll need to answer a few questions. Are you ready? 😉🐉
+        </p>
+        
+        <button class="ready-btn" (click)="startQuiz()">
+          Yes, I'm Ready! 💖
+        </button>
+      </div>
+    </div>
+  }
+  
+  @else if (!allQuestionsAnswered()) {
+    <!-- Step 1: Interactive open-ended quiz card -->
+    <div class="quiz-card">
+      <div class="dragon-accent">🐉</div>
+      
+      <h1 class="quiz-title">🐉 Journey Checkpoint</h1>
+      <p class="quiz-subtitle">
+        Type the correct answers to unlock the secret note! ❤️
+      </p>
+
+      <!-- Hearts Progress Indicator (3 Hearts) -->
+      <div class="hearts-progress">
+        @for (heart of [0, 1, 2]; track heart) {
+          <span 
+            class="heart-indicator" 
+            [class.filled]="heart < filledHearts()"
+            [class.new-fill]="heart === filledHearts() - 1 && isCorrectAnswerSelected()"
+          >
+            {{ heart < filledHearts() ? '❤️' : '🤍' }}
+          </span>
+        }
+      </div>
+
+      <!-- Current Typed Question Box -->
+      @if (showPhotoUpload()) {
+        <!-- Photo Upload Panel -->
+        <div class="photo-upload-container">
+          <h2 class="photo-prompt-title">🐉 issi baat pe ek photo bej do mujhe aapki plij!😭😂</h2>
+          
+          <div class="photo-uploader-box">
+            @if (photoPreviewUrl()) {
+              <div class="photo-preview-wrapper">
+                <img [src]="photoPreviewUrl()" class="photo-preview-img" alt="Preview" />
+                <button type="button" class="remove-photo-btn" (click)="photoPreviewUrl.set(''); selectedPhotoFile.set(null)">✕</button>
+              </div>
+            } @else {
+              <label for="checkpoint-photo-file" class="photo-upload-label">
+                <span class="upload-icon">📸</span>
+                <span class="upload-text">Select a gorgeous photo of you</span>
+              </label>
+              <input 
+                id="checkpoint-photo-file" 
+                type="file" 
+                accept="image/*" 
+                class="hidden-file-input" 
+                (change)="onPhotoSelected($event)" 
+              />
+            }
+          </div>
+
+          <div class="upload-actions">
+            <button 
+              class="upload-submit-btn" 
+              [disabled]="!selectedPhotoFile() || isUploadingPhoto()" 
+              (click)="submitPhotoAndContinue()"
+            >
+              @if (isUploadingPhoto()) {
+                <span>Sending photo... ⏳</span>
+              } @else {
+                <span>Send & Continue ➡️</span>
+              }
+            </button>
+            
+            <button class="upload-skip-btn" [disabled]="isUploadingPhoto()" (click)="skipPhotoAndContinue()">
+              Skip for now 🥺
+            </button>
+          </div>
+        </div>
+      } @else {
+        <!-- Standard Quiz Input Form -->
+        <div class="question-container">
+          <h2 class="question-text">{{ questions[currentQuestionIndex()].text }}</h2>
+          
+          <div class="input-wrapper" [class.shake]="isShaking()" [class.correct]="isCorrectAnswerSelected()">
+            <input 
+              #answerInput
+              type="text" 
+              [placeholder]="questions[currentQuestionIndex()].placeholder"
+              class="quiz-text-input"
+              [value]="typedAnswer()"
+              (input)="typedAnswer.set($any($event.target).value)"
+              (keyup.enter)="submitAnswer()"
+              [disabled]="isCorrectAnswerSelected()"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+            />
+            <span class="input-heart-icon">♡</span>
+          </div>
+
+          <button 
+            class="submit-ans-btn"
+            [disabled]="!typedAnswer().trim() || isCorrectAnswerSelected()"
+            (click)="submitAnswer()"
+          >
+            Submit Answer ➡️
+          </button>
+
+          @if (feedbackMessage()) {
+            <div class="feedback-msg">
+              {{ feedbackMessage() }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+  
+  @else {
+    <!-- Step 2: All questions answered correctly, transition to next stage -->
+    <div class="completion-container">
+      <h1 class="mission-title anim-mission">✨ Mission Complete</h1>
+
+      <div class="hearts-progress final-glow" [class.glow]="glowHearts()">
+        @for (heart of [0, 1, 2]; track heart) {
+          <span class="heart-indicator filled pulsate">❤️</span>
+        }
+      </div>
+
+      <p class="checkpoint-passed-text">
+        The checkpoint is open! But before you get that note, tell me a few things about us... 😉🐉🐺💜
+      </p>
+
+      <button class="unlock-surprise-btn" (click)="proceedToNextStage()">
+        Unlock Surprise Note 🎁➡️
+      </button>
+    </div>
+  }
+</div>

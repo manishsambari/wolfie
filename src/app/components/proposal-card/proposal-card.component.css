@@ -1,0 +1,183 @@
+.full-screen-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  background: radial-gradient(circle at center, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
+  overflow: hidden;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 1.5rem;
+}
+
+/* Floating emojis in background */
+.ambient-emoji-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ambient-emoji {
+  position: absolute;
+  bottom: -50px;
+  font-size: 1.8rem;
+  opacity: 0;
+  animation: floatEmoji 15s linear infinite;
+}
+
+.back-link-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  font-family: var(--font-body);
+  background: transparent;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0.75;
+  transition: all 0.3s ease;
+  z-index: 50;
+  outline: none;
+}
+
+.back-link-btn:hover {
+  opacity: 1;
+  color: var(--color-accent);
+}
+
+.text-content {
+  position: absolute;
+  top: 6%;
+  left: 5%;
+  right: 5%;
+  text-align: center;
+  pointer-events: none; /* Allows clicks to register on elements behind the text bounds */
+  z-index: 5;
+}
+
+.heart-icon {
+  font-size: 3rem;
+  margin-bottom: 0.25rem;
+  filter: drop-shadow(0 0 8px rgba(212, 167, 44, 0.4));
+  animation: pulse 2s infinite ease-in-out;
+}
+
+.title {
+  font-size: 2.1rem;
+  color: var(--color-headline);
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+.lyric-quote {
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-secondary);
+  margin: 0 auto 0.5rem auto;
+  opacity: 0.95;
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 90%;
+  line-height: 1.45;
+}
+
+@media (max-width: 380px) {
+  .lyric-quote {
+    font-size: 1.05rem;
+  }
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Yes Button - centered on the screen */
+.yes-btn {
+  font-family: var(--font-body);
+  background: linear-gradient(135deg, var(--color-accent) 0%, #b8860b 100%);
+  color: #250509;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(212, 167, 44, 0.4);
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              box-shadow 0.3s ease;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.yes-btn:hover {
+  box-shadow: 0 12px 25px rgba(212, 167, 44, 0.6);
+}
+
+/* No Button - hops around absolute screen coordinates */
+.no-btn {
+  font-family: var(--font-body);
+  background: #3D0C14; /* Solid opaque deep wine background */
+  color: var(--color-headline); /* Highly legible cream text */
+  border: 1px solid var(--color-accent); /* Solid gold border outline */
+  padding: 0.7rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 18px;
+  cursor: pointer;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  transition: left 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              top 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.3s ease,
+              box-shadow 0.3s ease;
+  white-space: normal;
+  text-align: center;
+  max-width: 80vw;
+  line-height: 1.4;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4), 
+              0 0 10px rgba(212, 167, 44, 0.15); /* Premium shadow and glow */
+  z-index: 15;
+}
+
+.no-btn:hover {
+  background: #250509; /* Darkens slightly on hover */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5), 
+              0 0 15px rgba(212, 167, 44, 0.25);
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@media (min-width: 600px) {
+  .title {
+    font-size: 2.5rem;
+  }
+}

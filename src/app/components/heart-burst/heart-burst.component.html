@@ -1,0 +1,14 @@
+<div class="burst-overlay">
+  <div class="burst-center">
+    @for (p of particles(); track p.id) {
+      <span 
+        class="burst-particle"
+        [style.--tx]="p.tx"
+        [style.--ty]="p.ty"
+        [style.--scale]="p.scale"
+        [style.animation-delay]="p.delay">
+        {{ p.char }}
+      </span>
+    }
+  </div>
+</div>
