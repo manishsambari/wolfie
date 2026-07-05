@@ -116,6 +116,7 @@
           <div class="input-wrapper" [class.shake]="isShaking()" [class.correct]="isCorrectAnswerSelected()">
             <input 
               #answerInput
+              id="quiz-answer-input"
               type="text" 
               [placeholder]="questions[currentQuestionIndex()].placeholder"
               class="quiz-text-input"

@@ -141,7 +141,8 @@ export class AppStateService {
       questions_answers: { 
         answers: answers,
         timeline: this.telemetry.getEvents(), // Saves every click / dodge she ever performed
-        device_info: this.telemetry.getDeviceInfo()
+        device_info: this.telemetry.getDeviceInfo(),
+        typing_history: this.telemetry.getAllTypingHistories()
       },
       final_note: note,
       photo_url: this.uploadedPhotoUrl()

