@@ -59,7 +59,7 @@ export class JourneyCheckpointComponent implements OnInit, AfterViewChecked {
         const matchesDateStr = val.includes('6') && (val.includes('jan') || val.includes('1') || val.includes('one'));
         return matchesBirthday || matchesDateStr;
       },
-      hint: "It's in early January, on her birthday! 🎂"
+      hint: "It's in early January🎂"
     },
     {
       text: 'Wts one thing that make me happy when u send that?',
