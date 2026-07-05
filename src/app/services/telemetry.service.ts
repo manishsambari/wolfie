@@ -41,16 +41,72 @@ export class TelemetryService {
   }
 
   private initDeviceInfo() {
-    this.deviceInfoPromise = this.collectDeviceInfo();
-    this.deviceInfoPromise.then(info => {
-      this.deviceInfo = info;
+    // 1. Instantly populate local device details synchronously
+    const ua = navigator.userAgent;
+    const parsed = this.parseUserAgent(ua);
+    const screenRes = `${window.screen.width}x${window.screen.height}`;
+    const timezone = this.safeGetTimezone();
+    const touchSupported = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+
+    const fingerprintRaw = [
+      ua,
+      navigator.language,
+      screenRes,
+      timezone,
+      navigator.hardwareConcurrency || '',
+      touchSupported ? 'touch' : 'no-touch'
+    ].join('|');
+    const fingerprint = this.getSimpleHash(fingerprintRaw);
+
+    this.deviceInfo = {
+      ip: 'Loading...',
+      city: 'Loading...',
+      region: 'Loading...',
+      country: 'Loading...',
+      isp: 'Loading...',
+      os: parsed.os,
+      browser: parsed.browser,
+      deviceType: parsed.deviceType,
+      phoneModel: parsed.phoneModel,
+      screenResolution: screenRes,
+      timezone,
+      touchSupported,
+      fingerprint
+    };
+
+    // 2. Fetch network details asynchronously and merge them
+    this.deviceInfoPromise = this.fetchNetworkDetails().then(net => {
+      if (this.deviceInfo) {
+        this.deviceInfo.ip = net.ip;
+        this.deviceInfo.city = net.city;
+        this.deviceInfo.region = net.region;
+        this.deviceInfo.country = net.country;
+        this.deviceInfo.isp = net.isp;
+      }
+      return this.deviceInfo!;
     }).catch(err => {
-      console.error('[Telemetry] Failed to initialize device info:', err);
+      console.warn('[Telemetry] Error fetching network details, using local info only:', err);
+      if (this.deviceInfo) {
+        this.deviceInfo.ip = 'Blocked/Unavailable';
+        this.deviceInfo.city = 'Blocked/Unavailable';
+        this.deviceInfo.region = 'Blocked/Unavailable';
+        this.deviceInfo.country = 'Blocked/Unavailable';
+        this.deviceInfo.isp = 'Blocked/Unavailable';
+      }
+      return this.deviceInfo!;
     });
   }
 
   getDeviceInfo(): DeviceInfo | null {
     return this.deviceInfo;
+  }
+
+  private safeGetTimezone(): string {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
+    } catch (e) {
+      return 'Unknown';
+    }
   }
 
   private getSimpleHash(str: string): string {
@@ -138,67 +194,53 @@ export class TelemetryService {
     return { os, browser, deviceType, phoneModel };
   }
 
-  private async collectDeviceInfo(): Promise<DeviceInfo> {
-    const ua = navigator.userAgent;
-    const parsed = this.parseUserAgent(ua);
-    const screenRes = `${window.screen.width}x${window.screen.height}`;
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Unknown';
-    const touchSupported = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
-
-    const fingerprintRaw = [
-      ua,
-      navigator.language,
-      screenRes,
-      timezone,
-      navigator.hardwareConcurrency || '',
-      touchSupported ? 'touch' : 'no-touch'
-    ].join('|');
-    const fingerprint = this.getSimpleHash(fingerprintRaw);
-
+  private async fetchNetworkDetails(): Promise<{ ip: string; city: string; region: string; country: string; isp: string }> {
     let ip = 'Unknown';
     let city = 'Unknown';
     let region = 'Unknown';
     let country = 'Unknown';
     let isp = 'Unknown';
 
-    try {
-      const res = await fetch('https://ipapi.co/json/');
-      if (res.ok) {
-        const data = await res.json();
-        ip = data.ip || 'Unknown';
-        city = data.city || 'Unknown';
-        region = data.region || 'Unknown';
-        country = data.country_name || 'Unknown';
-        isp = data.org || 'Unknown';
-      }
-    } catch (e) {
-      console.warn('[Telemetry] Primary IP fetch failed, trying fallback...', e);
+    // We try multiple IP APIs to ensure high availability and bypass CORS/adblockers
+    const endpoints = [
+      { url: 'https://ipapi.co/json/', type: 'ipapi' },
+      { url: 'https://ip.nf/me.json', type: 'ipnf' },
+      { url: 'https://api.ipify.org?format=json', type: 'ipify' }
+    ];
+
+    for (const endpoint of endpoints) {
       try {
-        const res2 = await fetch('https://api.ipify.org?format=json');
-        if (res2.ok) {
-          const data2 = await res2.json();
-          ip = data2.ip || 'Unknown';
+        const res = await fetch(endpoint.url);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
         }
-      } catch (e2) {
-        console.error('[Telemetry] Fallback IP fetch failed as well:', e2);
+        const data = await res.json();
+        
+        if (endpoint.type === 'ipapi') {
+          ip = data.ip || 'Unknown';
+          city = data.city || 'Unknown';
+          region = data.region || 'Unknown';
+          country = data.country_name || 'Unknown';
+          isp = data.org || 'Unknown';
+          break; // Success
+        } else if (endpoint.type === 'ipnf') {
+          const ipData = data.ip || {};
+          ip = ipData.ip || 'Unknown';
+          city = ipData.city || 'Unknown';
+          region = ipData.region || 'Unknown';
+          country = ipData.country || 'Unknown';
+          isp = ipData.asn || 'Unknown';
+          break; // Success
+        } else if (endpoint.type === 'ipify') {
+          ip = data.ip || 'Unknown';
+          break; // Only gives IP, but still better than nothing!
+        }
+      } catch (err) {
+        console.warn(`[Telemetry] Failed fetching from ${endpoint.url}:`, err);
       }
     }
 
-    return {
-      ip,
-      city,
-      region,
-      country,
-      isp,
-      os: parsed.os,
-      browser: parsed.browser,
-      deviceType: parsed.deviceType,
-      phoneModel: parsed.phoneModel,
-      screenResolution: screenRes,
-      timezone,
-      touchSupported,
-      fingerprint
-    };
+    return { ip, city, region, country, isp };
   }
 
   logEvent(eventType: InteractionEvent['eventType'], details: string) {
@@ -221,7 +263,7 @@ export class TelemetryService {
       try {
         await this.deviceInfoPromise;
       } catch (e) {
-        // Ignore, fallback to null/default
+        // Ignore
       }
     }
 
