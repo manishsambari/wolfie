@@ -1,60 +1,31 @@
 <div class="form-container">
-  <!-- Visual Back button (only shown when not loading) -->
-  @if (!isClosingIn()) {
-    <button class="back-link-btn" (click)="appState.goBack()">
-      ← Back
-    </button>
-  }
+  <!-- Visual Back button -->
+  <button class="back-link-btn" (click)="appState.goBack()">
+    ← Back
+  </button>
 
-  <!-- Pinned Distance Counter / Adventure Prep card -->
-  @if (!isClosingIn()) {
-    <div class="pinned-map">
-      <div class="nodes-container">
-        <div class="map-node">
-          <span class="node-emoji">🐉</span>
-          <span class="node-label">Mumbai</span>
-        </div>
-        <div class="path-visual">
-          <svg class="map-path" width="100%" height="20">
-            <line x1="0" y1="10" x2="100%" y2="10" stroke="#D4A72C" stroke-width="2" stroke-dasharray="6, 6" />
-          </svg>
-        </div>
-        <div class="map-node">
-          <span class="node-emoji">🐺</span>
-          <span class="node-label">Shimla</span>
-        </div>
+  <!-- Pinned Distance Counter -->
+  <div class="pinned-map">
+    <div class="nodes-container">
+      <div class="map-node">
+        <span class="node-emoji">🐉</span>
+        <span class="node-label">Mumbai</span>
       </div>
-      
-      <div class="distance-value">
-        1,400 KM APART
+      <div class="path-visual">
+        <svg class="map-path" width="100%" height="20">
+          <line x1="0" y1="10" x2="100%" y2="10" stroke="#D4A72C" stroke-width="2" stroke-dasharray="6, 6" />
+        </svg>
+      </div>
+      <div class="map-node">
+        <span class="node-emoji">🐺</span>
+        <span class="node-label">Shimla</span>
       </div>
     </div>
-  } @else {
-    <div class="adventure-prep-card">
-      <div class="prep-visuals">
-        @if (prepStep() === 1) {
-          <div class="prep-item anim-bounce">🐉🧳✈️</div>
-        }
-        @if (prepStep() === 2) {
-          <div class="prep-item anim-pulse">🛂📅🎫</div>
-        }
-        @if (prepStep() === 3) {
-          <div class="prep-item anim-backpack">🐉🎒✨</div>
-        }
-        @if (prepStep() === 4) {
-          <div class="prep-item anim-zoom">🛫🏔️💖</div>
-        }
-      </div>
-      
-      <div class="prep-status-text">
-        {{ prepText() }}
-      </div>
-      
-      <div class="prep-progress-bar">
-        <div class="progress-fill" [style.width.%]="prepStep() * 25"></div>
-      </div>
+
+    <div class="distance-value">
+      1,400 KM APART
     </div>
-  }
+  </div>
 
   <!-- Form Details -->
   <form [formGroup]="datePlaceForm" (ngSubmit)="onConfirm()" class="ask-form">
@@ -142,16 +113,11 @@
       </small>
     </div>
 
-    <button 
-      type="submit" 
-      class="confirm-btn" 
-      [disabled]="datePlaceForm.invalid || isClosingIn()"
-      [class.loading]="isClosingIn()">
-      @if (isClosingIn()) {
-        <span class="loading-spinner">⏳</span> Preparing plans...
-      } @else {
-        Confirm Date & Spot 💖
-      }
+    <button
+      type="submit"
+      class="confirm-btn"
+      [disabled]="datePlaceForm.invalid">
+      Confirm Date & Spot 💖
     </button>
   </form>
 </div>
