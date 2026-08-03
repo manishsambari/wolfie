@@ -65,6 +65,9 @@ export class ConfirmationComponent implements OnInit {
   readonly isTyping = signal<boolean>(false);
   readonly showSignature = signal<boolean>(false);
 
+  // Which letter is currently on screen: false = playful decoy, true = real secret letter
+  readonly showingRealLetter = signal<boolean>(false);
+
   readonly dateStrFormatted = computed(() => {
     const rawDate = this.appState.selectedDate();
     if (!rawDate) return '';
@@ -102,6 +105,7 @@ export class ConfirmationComponent implements OnInit {
     this.paperUnfold.set(false);
     this.isTyping.set(false);
     this.showSignature.set(false);
+    this.showingRealLetter.set(false);
 
     // Wait 1 second before starting envelope animation steps
     setTimeout(() => {
@@ -134,16 +138,17 @@ export class ConfirmationComponent implements OnInit {
   async startTyping() {
     this.isTyping.set(true);
     this.typedParagraphs.set([]);
-    
+
     const baseSpeed = 16; // ms per character
-    
-    for (let i = 0; i < this.paragraphs.length; i++) {
+    const source = this.showingRealLetter() ? this.storedActualNote : this.paragraphs;
+
+    for (let i = 0; i < source.length; i++) {
       if (!this.isTyping()) break;
-      
+
       this.currentTypingParaIndex.set(i);
       this.typedParagraphs.update(arr => [...arr, '']);
-      
-      const paragraphText = this.paragraphs[i];
+
+      const paragraphText = source[i];
       for (let j = 0; j < paragraphText.length; j++) {
         if (!this.isTyping()) break;
         
@@ -168,7 +173,8 @@ export class ConfirmationComponent implements OnInit {
 
   skipTyping() {
     this.isTyping.set(false);
-    this.typedParagraphs.set([...this.paragraphs]);
+    const source = this.showingRealLetter() ? this.storedActualNote : this.paragraphs;
+    this.typedParagraphs.set([...source]);
     this.finishTyping();
     this.telemetry.logEvent('LETTER_TYPING_SKIP', 'Skipped typing animation');
   }
@@ -176,8 +182,20 @@ export class ConfirmationComponent implements OnInit {
   private finishTyping() {
     setTimeout(() => {
       this.showSignature.set(true);
-      this.telemetry.logEvent('LETTER_COMPLETE', 'Finished reading Manish\'s note');
+      const detail = this.showingRealLetter()
+        ? 'Finished reading the real secret letter 💌'
+        : 'Finished reading the decoy note';
+      this.telemetry.logEvent('LETTER_COMPLETE', detail);
     }, 600);
+  }
+
+  // Swap the decoy out for the real secret letter and re-run the typing animation
+  revealRealLetter() {
+    this.showingRealLetter.set(true);
+    this.showSignature.set(false);
+    this.currentTypingParaIndex.set(0);
+    this.telemetry.logEvent('STAGE_CHANGE', 'Revealed the real secret letter 💌');
+    this.startTyping();
   }
 
   proceedFromLetter() {
