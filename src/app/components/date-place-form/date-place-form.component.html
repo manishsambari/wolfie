@@ -116,8 +116,13 @@
     <button
       type="submit"
       class="confirm-btn"
-      [disabled]="datePlaceForm.invalid">
-      Confirm Date & Spot 💖
+      [disabled]="datePlaceForm.invalid || isSubmitting()"
+      [class.loading]="isSubmitting()">
+      @if (isSubmitting()) {
+        <span class="loading-spinner">⏳</span> Confirming...
+      } @else {
+        Confirm Date & Spot 💖
+      }
     </button>
   </form>
 </div>

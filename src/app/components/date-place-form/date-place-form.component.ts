@@ -22,6 +22,7 @@ export class DatePlaceFormComponent implements OnInit {
 
   readonly minDate = signal<string>('');
   readonly distance = signal<number>(1400);
+  readonly isSubmitting = signal<boolean>(false);
 
   // Custom Calendar Picker State Signals
   readonly calendarOpen = signal<boolean>(false);
@@ -175,10 +176,15 @@ export class DatePlaceFormComponent implements OnInit {
   }
 
   onConfirm() {
-    if (this.datePlaceForm.invalid) return;
+    if (this.datePlaceForm.invalid || this.isSubmitting()) return;
 
-    const formValues = this.datePlaceForm.getRawValue();
-    this.appState.setPlaceAndDate(formValues.place, formValues.date);
-    this.appState.setStage(4);
+    // Brief loading state on the button for feedback before advancing
+    this.isSubmitting.set(true);
+
+    setTimeout(() => {
+      const formValues = this.datePlaceForm.getRawValue();
+      this.appState.setPlaceAndDate(formValues.place, formValues.date);
+      this.appState.setStage(4);
+    }, 900);
   }
 }
