@@ -148,15 +148,9 @@
           }
 
           @if (showSignature() && !isTyping()) {
-            @if (!showingRealLetter()) {
-              <button class="proceed-btn" (click)="revealRealLetter()">
-                Read the real note 💌
-              </button>
-            } @else {
-              <button class="proceed-btn" (click)="proceedFromLetter()">
-                Continue ➡️
-              </button>
-            }
+            <button class="proceed-btn" (click)="proceedFromLetter()">
+              Continue ➡️
+            </button>
           }
         </div>
       </div>

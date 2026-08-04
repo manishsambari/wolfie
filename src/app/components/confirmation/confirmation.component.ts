@@ -51,22 +51,11 @@ export class ConfirmationComponent implements OnInit {
     `bc i wanna blabber a lot about u but bc hath dukhi i cant type more rn, but haha u got my point right so yea... umm wow bc kitna kuch lik diya hai maine one take mein wow awesome nd damn my typing speed is actually improving W yea if something feels cringe just laugh at it cuz sometimes i feel like wtf am i even doing hahahaha. i literally cant stop yappingg byeeezzz. soo yea dont mind me if I said anything that made u uncomfortable. Fk me broo, umm so yea fk i cant even type that shit lmaoo tata call me after reading this hehe ..`
   ];
 
-  // Playful note shown to her for now
-  readonly paragraphs = [
-    "Wait a second... 👀",
-    "Did you really think it would be that easy to read my note? 😜",
-    "If you want to read the real note... you have to ask Manish directly! Haha! 🐉💜",
-    "Go on, bug him for it! But first... I'd love to read something from you. Leave me a little note before you go.💌"
-  ];
-
   // Letter Typing Animation States
   readonly typedParagraphs = signal<string[]>([]);
   readonly currentTypingParaIndex = signal<number>(0);
   readonly isTyping = signal<boolean>(false);
   readonly showSignature = signal<boolean>(false);
-
-  // Which letter is currently on screen: false = playful decoy, true = real secret letter
-  readonly showingRealLetter = signal<boolean>(false);
 
   readonly dateStrFormatted = computed(() => {
     const rawDate = this.appState.selectedDate();
@@ -105,7 +94,6 @@ export class ConfirmationComponent implements OnInit {
     this.paperUnfold.set(false);
     this.isTyping.set(false);
     this.showSignature.set(false);
-    this.showingRealLetter.set(false);
 
     // Wait 1 second before starting envelope animation steps
     setTimeout(() => {
@@ -140,7 +128,7 @@ export class ConfirmationComponent implements OnInit {
     this.typedParagraphs.set([]);
 
     const baseSpeed = 16; // ms per character
-    const source = this.showingRealLetter() ? this.storedActualNote : this.paragraphs;
+    const source = this.storedActualNote;
 
     for (let i = 0; i < source.length; i++) {
       if (!this.isTyping()) break;
@@ -173,8 +161,7 @@ export class ConfirmationComponent implements OnInit {
 
   skipTyping() {
     this.isTyping.set(false);
-    const source = this.showingRealLetter() ? this.storedActualNote : this.paragraphs;
-    this.typedParagraphs.set([...source]);
+    this.typedParagraphs.set([...this.storedActualNote]);
     this.finishTyping();
     this.telemetry.logEvent('LETTER_TYPING_SKIP', 'Skipped typing animation');
   }
@@ -182,20 +169,8 @@ export class ConfirmationComponent implements OnInit {
   private finishTyping() {
     setTimeout(() => {
       this.showSignature.set(true);
-      const detail = this.showingRealLetter()
-        ? 'Finished reading the real secret letter 💌'
-        : 'Finished reading the decoy note';
-      this.telemetry.logEvent('LETTER_COMPLETE', detail);
+      this.telemetry.logEvent('LETTER_COMPLETE', 'Finished reading the secret letter 💌');
     }, 600);
-  }
-
-  // Swap the decoy out for the real secret letter and re-run the typing animation
-  revealRealLetter() {
-    this.showingRealLetter.set(true);
-    this.showSignature.set(false);
-    this.currentTypingParaIndex.set(0);
-    this.telemetry.logEvent('STAGE_CHANGE', 'Revealed the real secret letter 💌');
-    this.startTyping();
   }
 
   proceedFromLetter() {
