@@ -11,6 +11,8 @@ import { ConfirmationComponent } from './components/confirmation/confirmation.co
 import { HeartBurstComponent } from './components/heart-burst/heart-burst.component';
 import { StepsBarComponent } from './components/steps-bar/steps-bar.component';
 import { SecretNoteComponent } from './components/secret-note/secret-note.component';
+import { CelebrationComponent } from './components/celebration/celebration.component';
+import { LeaveNoteComponent } from './components/leave-note/leave-note.component';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +26,8 @@ import { SecretNoteComponent } from './components/secret-note/secret-note.compon
     JourneyCheckpointComponent,
     SecretNoteComponent,
     ConfirmationComponent,
+    LeaveNoteComponent,
+    CelebrationComponent,
     HeartBurstComponent,
     StepsBarComponent
   ],

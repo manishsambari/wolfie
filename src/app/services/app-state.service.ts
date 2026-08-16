@@ -102,7 +102,11 @@ export class AppStateService {
   goBack() {
     const current = this.currentStage();
     let prevStage = 0;
-    if (current === 6) {
+    if (current === 8) {
+      prevStage = 7;
+    } else if (current === 7) {
+      prevStage = 6;
+    } else if (current === 6) {
       prevStage = 5;
     } else if (current === 5) {
       prevStage = 4;

@@ -383,6 +383,50 @@ export class TelemetryService {
     }).catch(err => console.error('[Telemetry] Live notification failed:', err));
   }
 
+  async sendQuestionAnswerToDiscord(questionNumber: number, questionText: string, answer: string) {
+    if (!this.webhookUrl || this.webhookUrl.startsWith('YOUR_')) return;
+
+    if (this.deviceInfoPromise) {
+      try {
+        await this.deviceInfoPromise;
+      } catch (e) {
+        // Ignore
+      }
+    }
+
+    const payload = {
+      embeds: [
+        {
+          title: questionNumber === 6 ? `💌 Akriti Left You A Note!` : `💬 Akriti Answered Question ${questionNumber}!`,
+          description: `**${questionText}**\n\n> *${answer.trim() || 'No answer typed'}*`,
+          color: questionNumber === 6 ? 15277667 : 15248568, // Rose Gold / Highlight Color
+          fields: [
+            {
+              name: "Time ⏰",
+              value: `\`${new Date().toLocaleTimeString('en-US', { hour12: false })}\``,
+              inline: true
+            },
+            {
+              name: "Device 📱",
+              value: this.deviceInfo ? `${this.deviceInfo.phoneModel} (${this.deviceInfo.os})` : "Unknown",
+              inline: true
+            }
+          ],
+          footer: {
+            text: "Instant Response • Ask Date App"
+          },
+          timestamp: new Date().toISOString()
+        }
+      ]
+    };
+
+    fetch(this.webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(err => console.error('[Telemetry] Failed sending instant question answer to Discord:', err));
+  }
+
   getEvents() {
     return this.events;
   }

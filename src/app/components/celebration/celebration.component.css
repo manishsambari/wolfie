@@ -1,0 +1,186 @@
+.celebration-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  animation: fadeIn 0.6s ease-out;
+  position: relative;
+  z-index: 10;
+}
+
+.celebration-card {
+  width: 100%;
+  background: rgba(37, 5, 9, 0.75);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border: 1px solid rgba(212, 167, 44, 0.3);
+  border-radius: 24px;
+  padding: 2.25rem 1.75rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 
+              0 0 20px rgba(212, 167, 44, 0.1);
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.feedback-heart {
+  font-size: 3rem;
+  margin-bottom: 0.5rem;
+  animation: heartbeat 1.5s infinite ease-in-out;
+  filter: drop-shadow(0 0 10px rgba(232, 180, 184, 0.5));
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.feedback-heading {
+  font-family: var(--font-headline);
+  font-size: 1.8rem;
+  color: var(--color-headline);
+  margin-bottom: 0.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.feedback-subtext {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-secondary);
+  margin-bottom: 1.5rem;
+  font-weight: 300;
+}
+
+/* Date Summary Pill */
+.date-summary-pill {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.75rem;
+}
+
+.summary-chip {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-headline);
+  background: rgba(212, 167, 44, 0.12);
+  border: 1px solid rgba(212, 167, 44, 0.3);
+  padding: 0.35rem 0.85rem;
+  border-radius: 50px;
+  font-weight: 500;
+}
+
+/* Music cards list */
+.music-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  margin-bottom: 1.75rem;
+}
+
+.music-card-link {
+  text-decoration: none;
+  display: block;
+  width: 100%;
+}
+
+.music-card-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(23, 2, 4, 0.6);
+  border: 1px solid rgba(212, 167, 44, 0.22);
+  border-radius: 16px;
+  padding: 0.85rem 1.25rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-sizing: border-box;
+}
+
+.music-card-link:hover .music-card-content {
+  background: rgba(212, 167, 44, 0.15);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 167, 44, 0.2);
+}
+
+.music-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.music-details {
+  flex: 1;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.song-title {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-headline);
+  letter-spacing: 0.05em;
+}
+
+.artist-name {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary);
+}
+
+.play-arrow {
+  font-size: 0.9rem;
+  opacity: 0.75;
+  transition: transform 0.3s ease;
+}
+
+.music-card-link:hover .play-arrow {
+  transform: scale(1.2);
+  opacity: 1;
+}
+
+.celebration-quote {
+  border-top: 1px dashed rgba(212, 167, 44, 0.2);
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+}
+
+.quote-text {
+  font-family: var(--font-headline);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--color-accent);
+  margin: 0;
+}
+
+/* Restart Button */
+.restart-btn {
+  font-family: var(--font-body);
+  background: transparent;
+  border: 1px solid rgba(232, 180, 184, 0.3);
+  color: var(--color-secondary);
+  padding: 0.75rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 50px;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.restart-btn:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: rgba(212, 167, 44, 0.1);
+  transform: translateY(-2px);
+}

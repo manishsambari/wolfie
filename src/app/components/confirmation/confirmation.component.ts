@@ -21,8 +21,7 @@ export class ConfirmationComponent implements OnInit {
   protected appState = inject(AppStateService);
   private telemetry = inject(TelemetryService);
 
-  readonly currentStep = signal<number>(0); // 0-4: Questions, 5: Final Note Leaving
-  readonly noteSent = signal<boolean>(false);
+  readonly currentStep = signal<number>(0); // 0-4: Questions
 
   readonly questions: PersonalQuestion[] = [
     { text: "What's one thing you've always wanted to ask me?", emoji: '💬', answer: '' },
@@ -33,13 +32,26 @@ export class ConfirmationComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.telemetry.logEvent('STAGE_CHANGE', 'Opened final Questionnaire & Celebration page');
+    this.telemetry.logEvent('STAGE_CHANGE', 'Opened Questions page 💬');
   }
 
   nextStep() {
-    if (this.currentStep() < 5) {
+    const currentIdx = this.currentStep();
+    if (currentIdx < 4) {
+      const q = this.questions[currentIdx];
+      // Send the question answer to Discord instantly!
+      if (q && q.answer.trim()) {
+        this.telemetry.sendQuestionAnswerToDiscord(currentIdx + 1, q.text, q.answer.trim());
+      }
       this.currentStep.update(s => s + 1);
       this.telemetry.logEvent('STAGE_CHANGE', `Moved to Questionnaire Step ${this.currentStep() + 1}`);
+    } else {
+      // Question 5 finished -> send to Discord and advance to Leave Note (Stage 7)!
+      const q = this.questions[4];
+      if (q && q.answer.trim()) {
+        this.telemetry.sendQuestionAnswerToDiscord(5, q.text, q.answer.trim());
+      }
+      this.appState.setStage(7);
     }
   }
 
@@ -48,26 +60,5 @@ export class ConfirmationComponent implements OnInit {
       this.currentStep.update(s => s - 1);
       this.telemetry.logEvent('STAGE_CHANGE', `Moved back to Questionnaire Step ${this.currentStep() + 1}`);
     }
-  }
-
-  submitAll(finalNote: string) {
-    let compiledNote = '';
-    const answersArr: { question: string, answer: string }[] = [];
-
-    this.questions.forEach((q, idx) => {
-      compiledNote += `**Q${idx + 1}: ${q.text}**\n*${q.answer.trim() || 'No answer'}*\n\n`;
-      answersArr.push({
-        question: q.text,
-        answer: q.answer.trim() || 'No answer'
-      });
-    });
-    compiledNote += `**Final Note:**\n*${finalNote.trim() || 'No note'}*`;
-
-    this.appState.submitUserNote(compiledNote, answersArr);
-    this.noteSent.set(true);
-  }
-
-  restart() {
-    this.appState.reset();
   }
 }

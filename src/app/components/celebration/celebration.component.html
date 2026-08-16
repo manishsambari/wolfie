@@ -1,0 +1,46 @@
+<div class="celebration-container">
+  
+  <div class="celebration-card">
+    <div class="feedback-heart">💖</div>
+    
+    <h2 class="feedback-heading">chalo bahut mehnat krliye apne...</h2>
+    <p class="feedback-subtext">yelo chai pio ☕ and ye gana suno! 👇</p>
+    
+    <!-- Date Summary Pill -->
+    <div class="date-summary-pill">
+      <span class="summary-chip">🍽️ {{ appState.selectedCuisine() || 'Dessert 🍰' }}</span>
+      <span class="summary-chip">📍 {{ appState.place() || 'Shimla Cafe ☕' }}</span>
+      <span class="summary-chip">🗓️ {{ (appState.selectedDate() | date:'MMM d, y') || 'Oct 10, 2026' }}</span>
+    </div>
+
+    <!-- Music Cards List -->
+    <div class="music-cards-container">
+      @for (song of songs; track song.title) {
+        <a 
+          [href]="song.url" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="music-card-link"
+          (click)="onSongClick(song.title)"
+        >
+          <div class="music-card-content">
+            <span class="music-icon">{{ song.icon }}</span>
+            <div class="music-details">
+              <span class="song-title">{{ song.title }}</span>
+              <span class="artist-name">{{ song.artist }}</span>
+            </div>
+            <span class="play-arrow">▶️</span>
+          </div>
+        </a>
+      }
+    </div>
+
+    <div class="celebration-quote">
+      <p class="quote-text">"Can't wait to see you soon! 🐉🐺✨"</p>
+    </div>
+  </div>
+
+  <button class="restart-btn" (click)="restart()">
+    Plan Again 🔄
+  </button>
+</div>

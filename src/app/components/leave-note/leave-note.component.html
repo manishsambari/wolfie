@@ -1,0 +1,36 @@
+<div class="leave-note-container">
+  <div class="note-card">
+    <div class="note-header">
+      <div class="envelope-icon">✉️</div>
+      <h2 class="note-title">Before you go... leave me a little note? 💜</h2>
+      <p class="note-subtext-1">Say something you'll smile reading again someday.</p>
+      <p class="note-subtext-2">Your thoughts are safe with me. ✨</p>
+    </div>
+
+    <div class="textarea-container">
+      <textarea 
+        id="conf-note-input"
+        placeholder="Type your note here..."
+        class="note-textarea-input"
+        rows="6"
+        [value]="noteText()"
+        (input)="noteText.set($any($event.target).value)"
+      ></textarea>
+      <span class="textarea-corner-heart">♡</span>
+    </div>
+
+    <div class="note-actions">
+      <button 
+        class="send-note-btn" 
+        [disabled]="isSubmitting()"
+        (click)="sendNote()"
+      >
+        @if (isSubmitting()) {
+          <span>Sending Note... ⏳</span>
+        } @else {
+          <span>Send Note 💌✨</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>
