@@ -1,79 +1,25 @@
-<!-- Discreet Floating Corner Button -->
-<button 
-  class="floating-nav-trigger"
-  (click)="toggleDrawer()"
-  [class.drawer-open]="isDrawerOpen()"
-  aria-label="Toggle section navigation drawer"
->
-  <span class="trigger-icon">🧭</span>
-  <span class="trigger-label">
-    <span class="trigger-stage-text">Section {{ appState.currentStage() + 1 }}</span>
-    <span class="trigger-pill-dot"></span>
-  </span>
-</button>
-
-<!-- Backdrop Overlay -->
-@if (isDrawerOpen()) {
-  <div 
-    class="drawer-backdrop" 
-    (click)="closeDrawer()"
-    aria-hidden="true"
-  ></div>
-}
-
-<!-- Slide-out Section Drawer -->
-<aside 
-  class="section-drawer" 
-  [class.open]="isDrawerOpen()"
-  aria-label="Sections list drawer"
->
-  <div class="drawer-header">
-    <div class="drawer-header-left">
-      <span class="drawer-icon">🧭</span>
-      <div>
-        <h3 class="drawer-title">Jump to Section</h3>
-        <span class="drawer-subtitle">Section {{ appState.currentStage() + 1 }} of {{ steps.length }}</span>
-      </div>
-    </div>
-    <button class="drawer-close-btn" (click)="closeDrawer()" aria-label="Close drawer">✕</button>
-  </div>
-
-  <!-- Progress Bar Line inside Drawer -->
-  <div class="drawer-progress-container">
+<nav class="steps-nav-container" aria-label="Sections navigation bar">
+  <div class="progress-line-bg">
     <div 
-      class="drawer-progress-fill" 
-      [style.width.%]="((appState.currentStage() + 1) / steps.length) * 100"
+      class="progress-line-active" 
+      [style.width.%]="(appState.currentStage() / (steps.length - 1)) * 100"
     ></div>
   </div>
-
-  <!-- Section Cards List -->
-  <div class="drawer-sections-list">
+  
+  <div class="steps-wrapper">
     @for (step of steps; track step.stage) {
       <button 
-        class="drawer-section-item"
+        class="step-item"
         [class.active]="appState.currentStage() === step.stage"
         [class.completed]="appState.currentStage() > step.stage"
         (click)="navigateToStage(step.stage)"
+        [attr.aria-label]="'Go to ' + step.label + ' section'"
       >
-        <div class="section-emoji-avatar">
-          <span>{{ step.emoji }}</span>
-          @if (appState.currentStage() > step.stage) {
-            <span class="completed-check">✓</span>
-          }
+        <div class="step-icon-outer">
+          <span class="step-emoji">{{ step.emoji }}</span>
         </div>
-
-        <div class="section-info">
-          <div class="section-title-row">
-            <span class="section-title">{{ step.label }}</span>
-            @if (appState.currentStage() === step.stage) {
-              <span class="active-badge">Active</span>
-            }
-          </div>
-          <span class="section-subtitle">{{ step.subtitle }}</span>
-        </div>
-
-        <span class="section-arrow">›</span>
+        <span class="step-tooltip">{{ step.label }}</span>
       </button>
     }
   </div>
-</aside>
+</nav>
