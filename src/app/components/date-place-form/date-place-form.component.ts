@@ -22,7 +22,7 @@ export class DatePlaceFormComponent implements OnInit {
 
   readonly minDate = signal<string>('');
   readonly distance = signal<number>(1400);
-  readonly isClosingIn = signal<boolean>(false);
+  readonly isSubmitting = signal<boolean>(false);
 
   // Custom Calendar Picker State Signals
   readonly calendarOpen = signal<boolean>(false);
@@ -34,10 +34,6 @@ export class DatePlaceFormComponent implements OnInit {
   readonly monthsList = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   readonly yearsList = [2026, 2027, 2028, 2029, 2030, 2031];
   readonly selectedDateVal = signal<string>('');
-
-  // Morphing Adventure Prep Signals
-  readonly prepStep = signal<number>(0);
-  readonly prepText = signal<string>('Planning the adventure...');
 
   readonly datePlaceForm = new FormGroup({
     place: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
@@ -180,38 +176,15 @@ export class DatePlaceFormComponent implements OnInit {
   }
 
   onConfirm() {
-    if (this.datePlaceForm.invalid) return;
+    if (this.datePlaceForm.invalid || this.isSubmitting()) return;
 
-    this.isClosingIn.set(true);
-    this.datePlaceForm.disable();
+    // Brief loading state on the button for feedback before advancing
+    this.isSubmitting.set(true);
 
-    // Step 1: Planning the adventure...
-    this.prepStep.set(1);
-    this.prepText.set('Planning the adventure...');
-
-    // Step 2: Date Locked 📅 (after 1.2s)
-    setTimeout(() => {
-      this.prepStep.set(2);
-      this.prepText.set('Date Locked 📅');
-    }, 1200);
-
-    // Step 3: Mission Accepted 🐉 (after 2.4s)
-    setTimeout(() => {
-      this.prepStep.set(3);
-      this.prepText.set('Mission Accepted 🐉');
-    }, 2400);
-
-    // Step 4: Countdown start text (after 3.6s)
-    setTimeout(() => {
-      this.prepStep.set(4);
-      this.prepText.set('The dragon has officially started counting down...');
-    }, 3600);
-
-    // Transition to confirmation success page (after 5.0s)
     setTimeout(() => {
       const formValues = this.datePlaceForm.getRawValue();
       this.appState.setPlaceAndDate(formValues.place, formValues.date);
       this.appState.setStage(4);
-    }, 5000);
+    }, 900);
   }
 }

@@ -241,6 +241,7 @@ export class JourneyCheckpointComponent implements OnInit, AfterViewChecked {
 
   private handleQuizCompletion() {
     this.telemetry.logEvent('QUIZ_COMPLETE', 'All open questions answered correctly');
+    this.appState.markJourneyDone();
     this.showMissionComplete.set(true);
     this.glowHearts.set(true);
   }

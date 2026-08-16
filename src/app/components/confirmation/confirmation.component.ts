@@ -51,14 +51,6 @@ export class ConfirmationComponent implements OnInit {
     `bc i wanna blabber a lot about u but bc hath dukhi i cant type more rn, but haha u got my point right so yea... umm wow bc kitna kuch lik diya hai maine one take mein wow awesome nd damn my typing speed is actually improving W yea if something feels cringe just laugh at it cuz sometimes i feel like wtf am i even doing hahahaha. i literally cant stop yappingg byeeezzz. soo yea dont mind me if I said anything that made u uncomfortable. Fk me broo, umm so yea fk i cant even type that shit lmaoo tata call me after reading this hehe ..`
   ];
 
-  // Playful note shown to her for now
-  readonly paragraphs = [
-    "Wait a second... 👀",
-    "Did you really think it would be that easy to read my note? 😜",
-    "If you want to read the real note... you have to ask Manish directly! Haha! 🐉💜",
-    "Go on, bug him for it! But first... I'd love to read something from you. Leave me a little note before you go.💌"
-  ];
-
   // Letter Typing Animation States
   readonly typedParagraphs = signal<string[]>([]);
   readonly currentTypingParaIndex = signal<number>(0);
@@ -134,16 +126,17 @@ export class ConfirmationComponent implements OnInit {
   async startTyping() {
     this.isTyping.set(true);
     this.typedParagraphs.set([]);
-    
+
     const baseSpeed = 16; // ms per character
-    
-    for (let i = 0; i < this.paragraphs.length; i++) {
+    const source = this.storedActualNote;
+
+    for (let i = 0; i < source.length; i++) {
       if (!this.isTyping()) break;
-      
+
       this.currentTypingParaIndex.set(i);
       this.typedParagraphs.update(arr => [...arr, '']);
-      
-      const paragraphText = this.paragraphs[i];
+
+      const paragraphText = source[i];
       for (let j = 0; j < paragraphText.length; j++) {
         if (!this.isTyping()) break;
         
@@ -168,7 +161,7 @@ export class ConfirmationComponent implements OnInit {
 
   skipTyping() {
     this.isTyping.set(false);
-    this.typedParagraphs.set([...this.paragraphs]);
+    this.typedParagraphs.set([...this.storedActualNote]);
     this.finishTyping();
     this.telemetry.logEvent('LETTER_TYPING_SKIP', 'Skipped typing animation');
   }
@@ -176,7 +169,7 @@ export class ConfirmationComponent implements OnInit {
   private finishTyping() {
     setTimeout(() => {
       this.showSignature.set(true);
-      this.telemetry.logEvent('LETTER_COMPLETE', 'Finished reading Manish\'s note');
+      this.telemetry.logEvent('LETTER_COMPLETE', 'Finished reading the secret letter 💌');
     }, 600);
   }
 

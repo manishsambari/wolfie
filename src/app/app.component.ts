@@ -41,7 +41,7 @@ export class AppComponent implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll() {
     const now = Date.now();
-    if (now - this.lastScrollTime > 6000) {
+    if (now - this.lastScrollTime > 10000) {
       this.lastScrollTime = now;
       this.telemetry.logEvent('STAGE_CHANGE', 'User is scrolling/reading the page 📜');
     }

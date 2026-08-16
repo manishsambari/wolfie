@@ -15,7 +15,12 @@ export class AppStateService {
   private telemetry = inject(TelemetryService);
   private supabase = inject(SupabaseService);
 
+  private static readonly JOURNEY_DONE_KEY = 'wolfie_journey_done';
+
   readonly currentStage = signal<number>(0);
+  // Whether the Journey Checkpoint (stage 4) has already been completed. Persisted so we
+  // never make the user redo it, even across page reloads.
+  readonly journeyDone = signal<boolean>(this.readJourneyDone());
   readonly uploadedPhotoUrl = signal<string>('');
   readonly dodgeCount = signal<number>(0);
   readonly selectedCuisine = signal<string>('Dessert 🍰');
@@ -69,7 +74,28 @@ export class AppStateService {
     this.telemetry.logEvent('STAGE_CHANGE', `App opened on Stage ${this.currentStage()}`);
   }
 
+  private readJourneyDone(): boolean {
+    try {
+      return localStorage.getItem(AppStateService.JOURNEY_DONE_KEY) === 'true';
+    } catch (e) {
+      return false;
+    }
+  }
+
+  markJourneyDone() {
+    this.journeyDone.set(true);
+    try {
+      localStorage.setItem(AppStateService.JOURNEY_DONE_KEY, 'true');
+    } catch (e) {
+      // Storage unavailable (private mode / blocked) — flag still holds for this session.
+    }
+  }
+
   setStage(stage: number, pushHistory = true) {
+    // If the Journey Checkpoint is already done, never route the user back into it.
+    if (stage === 4 && this.journeyDone()) {
+      stage = 5;
+    }
     this.currentStage.set(stage);
     this.telemetry.logEvent('STAGE_CHANGE', `Transitioned to Stage ${stage}`);
     if (pushHistory) {
@@ -81,7 +107,8 @@ export class AppStateService {
     const current = this.currentStage();
     let prevStage = 0;
     if (current === 5) {
-      prevStage = 4;
+      // Skip the checkpoint on the way back too if it's already completed
+      prevStage = this.journeyDone() ? 3 : 4;
     } else if (current === 4) {
       prevStage = 3;
     } else if (current === 3) {
