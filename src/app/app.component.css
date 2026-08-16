@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  padding: 2rem 1rem 6rem 1rem; /* Clear floating bottom dock */
+  padding: 2rem 1rem;
   margin: 0;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -23,7 +23,7 @@
 
 @media (min-width: 600px) {
   .app-layout {
-    padding: 2.5rem 1rem 6.5rem 1rem;
+    padding: 2.5rem 1rem;
   }
   .stage-container {
     max-width: 600px;
