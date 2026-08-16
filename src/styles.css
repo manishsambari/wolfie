@@ -83,3 +83,10 @@ h1, h2, h3, h4, h5, h6 {
     scroll-behavior: auto !important;
   }
 }
+
+/* Hide card-level back buttons on mobile to avoid collision with floating steps bar */
+@media (max-width: 600px) {
+  .back-link-btn {
+    display: none !important;
+  }
+}

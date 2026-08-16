@@ -5,9 +5,10 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  padding: 0;
+  padding: 6rem 1rem 2rem 1rem; /* Added top padding to clear floating steps bar */
   margin: 0;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .stage-container {
@@ -33,7 +34,7 @@
 
 @media (min-width: 600px) {
   .app-layout {
-    padding: 2rem 1rem;
+    padding: 7rem 1rem 3rem 1rem; /* Adjust padding on desktop as well */
   }
   .stage-container {
     max-width: 600px;

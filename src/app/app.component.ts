@@ -9,6 +9,7 @@ import { DatePlaceFormComponent } from './components/date-place-form/date-place-
 import { JourneyCheckpointComponent } from './components/journey-checkpoint/journey-checkpoint.component';
 import { ConfirmationComponent } from './components/confirmation/confirmation.component';
 import { HeartBurstComponent } from './components/heart-burst/heart-burst.component';
+import { StepsBarComponent } from './components/steps-bar/steps-bar.component';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ import { HeartBurstComponent } from './components/heart-burst/heart-burst.compon
     DatePlaceFormComponent,
     JourneyCheckpointComponent,
     ConfirmationComponent,
-    HeartBurstComponent
+    HeartBurstComponent,
+    StepsBarComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

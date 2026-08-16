@@ -1,12 +1,11 @@
-/* Container Layout */
 .confirmation-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  width: 100vw;
-  min-height: 100vh;
+  width: 100%;
+  min-height: calc(100vh - 8rem);
   background: var(--color-bg-end); /* Solid deep dark background matching theme */
   background: radial-gradient(circle at center, var(--color-bg-start) 0%, var(--color-bg-end) 100%);
   border: none;

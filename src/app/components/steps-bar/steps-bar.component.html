@@ -1,0 +1,22 @@
+<nav class="steps-nav-container">
+  <div class="progress-line-bg">
+    <div class="progress-line-active" [style.width.%]="(appState.currentStage() / (steps.length - 1)) * 100"></div>
+  </div>
+  
+  <div class="steps-wrapper">
+    @for (step of steps; track step.stage) {
+      <button 
+        class="step-item"
+        [class.active]="appState.currentStage() === step.stage"
+        [class.completed]="appState.currentStage() > step.stage"
+        (click)="navigateToStage(step.stage)"
+        [attr.aria-label]="'Go to step ' + step.label"
+      >
+        <div class="step-icon-outer">
+          <span class="step-emoji">{{ step.emoji }}</span>
+        </div>
+        <span class="step-label">{{ step.label }}</span>
+      </button>
+    }
+  </div>
+</nav>
