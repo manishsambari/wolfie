@@ -50,36 +50,114 @@ export class JourneyCheckpointComponent implements OnInit, AfterViewChecked {
 
   readonly questions: TypedQuestion[] = [
     {
-      text: 'When was the first time you called me "thanks love"?',
-      placeholder: 'Type the date or occasion...',
-      checkAnswer: (typed: string) => {
-        const val = typed.trim().toLowerCase();
-        // Accepts: birthday, my birthday, 6 jan, 6 january, jan 6, 6th january, etc.
-        const matchesBirthday = val.includes('birth');
-        const matchesDateStr = val.includes('6') && (val.includes('jan') || val.includes('1') || val.includes('one'));
-        return matchesBirthday || matchesDateStr;
-      },
-      hint: "It's in early January🎂"
-    },
-    {
-      text: 'Wts one thing that make me happy when u send that?',
+      text: 'What do you think, will we ever gonna meet?',
       placeholder: 'Type your answer...',
       checkAnswer: (typed: string) => {
         const val = typed.trim().toLowerCase();
-        // Accepts: a photo of her, photo, pic, selfie, picture, etc.
-        return val.includes('photo') || val.includes('pic') || val.includes('selfie') || val.includes('picture');
+        return (
+          val === 'no' ||
+          val === 'nope' ||
+          val === 'nah' ||
+          val === 'never' ||
+          val === 'n' ||
+          val === 'na' ||
+          val === 'nhi' ||
+          val === 'nahi' ||
+          val === 'nahin' ||
+          val === 'no way' ||
+          val.startsWith('no') ||
+          val.startsWith('nah')
+        );
       },
-      hint: "It's a visual reminder of you! 📸"
+      hint: "Try typing 'No' 😉"
     },
     {
-      text: 'Who\'s my favorite person to talk?',
-      placeholder: 'Type who...',
+      text: 'Do you ever gonna love me again?',
+      placeholder: 'Type your answer...',
       checkAnswer: (typed: string) => {
         const val = typed.trim().toLowerCase();
-        // Accepts "me", "you", "akriti", "akrit"
-        return val === 'me' || val === 'you' || val.includes('akriti') || val.includes('akrit');
+        return (
+          val === 'no' ||
+          val === 'nope' ||
+          val === 'nah' ||
+          val === 'never' ||
+          val === 'n' ||
+          val === 'na' ||
+          val === 'nhi' ||
+          val === 'nahi' ||
+          val === 'nahin' ||
+          val === 'no way' ||
+          val.startsWith('no') ||
+          val.startsWith('nah')
+        );
       },
-      hint: "Look in the mirror 🪞"
+      hint: "Think carefully... try 'No' 🙃"
+    },
+    {
+      text: 'Did you ever think I never loved you?',
+      placeholder: 'Type your answer...',
+      checkAnswer: (typed: string) => {
+        const val = typed.trim().toLowerCase();
+        return (
+          val === 'yes' ||
+          val === 'y' ||
+          val === 'yeah' ||
+          val === 'yep' ||
+          val === 'always' ||
+          val === 'ha' ||
+          val === 'haa' ||
+          val === 'haan' ||
+          val === 'true' ||
+          val === 'of course' ||
+          val.startsWith('ye') ||
+          val.startsWith('ya')
+        );
+      },
+      hint: "You always think that... try typing 'Yes' 💭"
+    },
+    {
+      text: 'Do you think I will ever stop caring about you?',
+      placeholder: 'Type your answer...',
+      checkAnswer: (typed: string) => {
+        const val = typed.trim().toLowerCase();
+        return (
+          val === 'no' ||
+          val === 'nope' ||
+          val === 'nah' ||
+          val === 'never' ||
+          val === 'n' ||
+          val === 'na' ||
+          val === 'nhi' ||
+          val === 'nahi' ||
+          val === 'nahin' ||
+          val === 'no way' ||
+          val.startsWith('no') ||
+          val.startsWith('nah')
+        );
+      },
+      hint: "Never gonna happen... try typing 'No' 🤍"
+    },
+    {
+      text: 'Do you think we will ever talk again?',
+      placeholder: 'Type your answer...',
+      checkAnswer: (typed: string) => {
+        const val = typed.trim().toLowerCase();
+        return (
+          val === 'no' ||
+          val === 'nope' ||
+          val === 'nah' ||
+          val === 'never' ||
+          val === 'n' ||
+          val === 'na' ||
+          val === 'nhi' ||
+          val === 'nahi' ||
+          val === 'nahin' ||
+          val === 'no way' ||
+          val.startsWith('no') ||
+          val.startsWith('nah')
+        );
+      },
+      hint: "Try typing 'No' 💬"
     }
   ];
 

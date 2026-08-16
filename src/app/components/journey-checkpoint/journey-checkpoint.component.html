@@ -50,15 +50,15 @@
         Type the answers to unlock Manish's secret letter! ❤️
       </p>
 
-      <!-- Hearts Progress Indicator (3 Hearts) -->
+      <!-- Hearts Progress Indicator (Dynamic to Questions Count) -->
       <div class="hearts-progress">
-        @for (heart of [0, 1, 2]; track heart) {
+        @for (q of questions; track $index) {
           <span 
             class="heart-indicator" 
-            [class.filled]="heart < filledHearts()"
-            [class.new-fill]="heart === filledHearts() - 1 && isCorrectAnswerSelected()"
+            [class.filled]="$index < filledHearts()"
+            [class.new-fill]="$index === filledHearts() - 1 && isCorrectAnswerSelected()"
           >
-            {{ heart < filledHearts() ? '❤️' : '🤍' }}
+            {{ $index < filledHearts() ? '❤️' : '🤍' }}
           </span>
         }
       </div>
@@ -156,7 +156,7 @@
       <h2 class="mission-title anim-mission">✨ Mission Complete</h2>
 
       <div class="hearts-progress final-glow" [class.glow]="glowHearts()">
-        @for (heart of [0, 1, 2]; track heart) {
+        @for (q of questions; track $index) {
           <span class="heart-indicator filled pulsate">❤️</span>
         }
       </div>
