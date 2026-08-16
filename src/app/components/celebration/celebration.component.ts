@@ -16,22 +16,22 @@ export class CelebrationComponent implements OnInit {
 
   readonly songs = [
     {
-      title: 'PEED',
-      artist: 'Diljit Dosanjh',
+      title: 'TAAJ',
+      artist: 'tricksingh',
       icon: '🎵',
-      url: 'https://youtu.be/cXUndHRKmXQ?si=YqKZ66eq7ZeljogQ'
+      url: 'https://youtu.be/Du8E8g2LVoU?si=PTLuL3Ie0ki_3FOt'
     },
     {
-      title: 'RUKH',
+      title: 'Nai Bolna',
       artist: 'Navaan Sandhu',
       icon: '🎵',
-      url: 'https://www.youtube.com/watch?v=nyWgcJQNWzA'
+      url: 'https://youtu.be/ai9cv29SJsQ?si=nW1ZyKxoUiBdaV2A'
     },
     {
-      title: 'HIM',
+      title: 'Bachke Bachke',
       artist: 'Karan Aujla',
       icon: '🎵',
-      url: 'https://youtu.be/_eoYsV5RwyA?si=Syz4USkb_rqdG2Gr'
+      url: 'https://youtu.be/fRJ03btNsao?si=4BV7dqradZ9SlFB4'
     }
   ];
 
