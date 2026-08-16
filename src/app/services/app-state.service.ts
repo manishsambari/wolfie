@@ -92,10 +92,6 @@ export class AppStateService {
   }
 
   setStage(stage: number, pushHistory = true) {
-    // If the Journey Checkpoint is already done, never route the user back into it.
-    if (stage === 4 && this.journeyDone()) {
-      stage = 5;
-    }
     this.currentStage.set(stage);
     this.telemetry.logEvent('STAGE_CHANGE', `Transitioned to Stage ${stage}`);
     if (pushHistory) {
@@ -106,9 +102,10 @@ export class AppStateService {
   goBack() {
     const current = this.currentStage();
     let prevStage = 0;
-    if (current === 5) {
-      // Skip the checkpoint on the way back too if it's already completed
-      prevStage = this.journeyDone() ? 3 : 4;
+    if (current === 6) {
+      prevStage = 5;
+    } else if (current === 5) {
+      prevStage = 4;
     } else if (current === 4) {
       prevStage = 3;
     } else if (current === 3) {

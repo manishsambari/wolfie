@@ -10,6 +10,7 @@ import { JourneyCheckpointComponent } from './components/journey-checkpoint/jour
 import { ConfirmationComponent } from './components/confirmation/confirmation.component';
 import { HeartBurstComponent } from './components/heart-burst/heart-burst.component';
 import { StepsBarComponent } from './components/steps-bar/steps-bar.component';
+import { SecretNoteComponent } from './components/secret-note/secret-note.component';
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,7 @@ import { StepsBarComponent } from './components/steps-bar/steps-bar.component';
     CuisinePickerComponent,
     DatePlaceFormComponent,
     JourneyCheckpointComponent,
+    SecretNoteComponent,
     ConfirmationComponent,
     HeartBurstComponent,
     StepsBarComponent

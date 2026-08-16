@@ -24,7 +24,8 @@ export class StepsBarComponent {
     { stage: 2, label: 'Cuisine', emoji: '🍕' },
     { stage: 3, label: 'Details', emoji: '📅' },
     { stage: 4, label: 'Quiz', emoji: '✨' },
-    { stage: 5, label: 'Success', emoji: '💖' }
+    { stage: 5, label: 'Secret Note', emoji: '✉️' },
+    { stage: 6, label: 'Success', emoji: '💖' }
   ];
 
   navigateToStage(stage: number) {

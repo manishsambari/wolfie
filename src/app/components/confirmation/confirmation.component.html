@@ -4,25 +4,23 @@
     <div class="questionnaire-card">
       <div class="dragon-decor">🐉</div>
 
-      <!-- Step Indicator Dots (7 steps: 0-4 questions, 5 letter, 6 final note) -->
+      <!-- Step Indicator Dots (6 steps: 0-4 questions, 5 final note) -->
       <div class="progress-bar-container">
         <div class="progress-dots">
-          @for (step of [0, 1, 2, 3, 4, 5, 6]; track step) {
+          @for (step of [0, 1, 2, 3, 4, 5]; track step) {
             <span class="dot" [class.active]="step === currentStep()" [class.completed]="step < currentStep()"></span>
           }
         </div>
         <span class="step-text">
           @if (currentStep() < 5) {
             Question {{ currentStep() + 1 }} of 5
-          } @else if (currentStep() === 5) {
-            Manish's Note ✉️
           } @else {
             Final Step 💌
           }
         </span>
       </div>
 
-      <!-- Questionnaire Slider Content -->
+      <!-- Questionnaire Content -->
       <div class="questions-slider">
         @if (currentStep() < 5) {
           <!-- Active Question Card -->
@@ -37,7 +35,7 @@
                 [id]="'q-input-' + currentStep()"
                 [placeholder]="'Type your thoughts here...'"
                 class="conf-textarea-input"
-                rows="5"
+                rows="4"
                 [(ngModel)]="questions[currentStep()].answer"
               ></textarea>
               <span class="textarea-corner-heart">♡</span>
@@ -54,38 +52,14 @@
               
               <button 
                 class="nav-btn next-btn" 
-                [disabled]="!questions[currentStep()].answer.trim()" 
                 (click)="nextStep()"
               >
                 Next ➡️
               </button>
             </div>
           </div>
-        } @else if (currentStep() === 5) {
-          <!-- Step 7: Envelope Animation Container -->
-          <div class="envelope-step-container active-card">
-            <h2 class="envelope-step-title">✉️ Opening surprise note...</h2>
-            @if (showEnvelope()) {
-              <div 
-                class="envelope-wrapper" 
-                [class.float]="envelopeFloat()" 
-                [class.open]="envelopeOpen()"
-                [class.fade-out]="paperUnfold()"
-              >
-                <div class="envelope">
-                  <div class="envelope-flap"></div>
-                  <div class="envelope-body">
-                    <div class="dragon-stamp">🐉</div>
-                  </div>
-                  <div class="envelope-paper" [class.slide-out]="paperSlideOut()">
-                    <div class="folded-paper-lines"></div>
-                  </div>
-                </div>
-              </div>
-            }
-          </div>
         } @else {
-          <!-- Step 8: Final Envelope Note Card -->
+          <!-- Final Note Card -->
           <div class="final-note-card active-card">
             <div class="note-header">
               <span class="envelope-emoji">✉️</span>
@@ -100,7 +74,7 @@
                 #noteInput
                 placeholder="Type your note here..."
                 class="conf-textarea-input"
-                rows="5"
+                rows="4"
               ></textarea>
               <span class="textarea-corner-heart">♡</span>
             </div>
@@ -118,44 +92,8 @@
         }
       </div>
     </div>
-
-    <!-- Unfolded Letter Card (global overlay, visible when paper unfolds) -->
-    @if (paperUnfold()) {
-      <div class="letter-card-overlay visible">
-        <div class="letter-seal-inside">💌</div>
-        
-        <div class="letter-scroll-area">
-          <div class="typed-text-container">
-            @for (para of typedParagraphs(); track $index) {
-              <p class="handwritten-para">
-                {{ para }}<span class="blinking-cursor" *ngIf="isTyping() && currentTypingParaIndex() === $index">|</span>
-              </p>
-            }
-          </div>
-          
-          <div class="letter-signature" [class.visible]="showSignature()">
-            <p class="signature-line">— Yours,</p>
-            <p class="signature-line name">Manish 🐉</p>
-          </div>
-        </div>
-
-        <!-- Controls at the bottom of the card -->
-        <div class="letter-controls">
-          @if (isTyping()) {
-            <button class="skip-btn" (click)="skipTyping()">
-              Skip Typing ⚡
-            </button>
-          }
-
-          @if (showSignature() && !isTyping()) {
-            <button class="proceed-btn" (click)="proceedFromLetter()">
-              Continue ➡️
-            </button>
-          }
-        </div>
-      </div>
-    }
   } @else {
+    <!-- Note Sent Feedback / Celebration Card -->
     <div class="note-sent-feedback active-card">
       <div class="feedback-heart">💖</div>
       <h2 class="feedback-heading">chalo bahut mehnat krliye apne...</h2>

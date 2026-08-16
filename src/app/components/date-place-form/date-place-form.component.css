@@ -3,54 +3,55 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
   height: auto;
-  min-height: calc(100vh - 8rem);
+  min-height: auto;
   background: var(--color-card-bg);
-  border: none;
-  border-radius: 0;
-  padding: 3.5rem 1.5rem 2rem 1.5rem;
-  box-shadow: none;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--color-card-border);
+  border-radius: 24px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 
+              0 0 20px rgba(212, 167, 44, 0.08);
   animation: fadeInUp 0.6s ease-out;
   position: relative;
   z-index: 2;
   box-sizing: border-box;
 }
 
-.back-link-btn {
-  position: absolute;
-  top: 1.5rem;
-  left: 1.5rem;
-  font-family: var(--font-body);
-  background: transparent;
-  border: none;
-  color: var(--color-secondary);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
+/* Selected Cuisine Badge */
+.selected-cuisine-badge {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-  opacity: 0.75;
-  transition: all 0.3s ease;
-  z-index: 20;
-  outline: none;
+  gap: 0.5rem;
+  background: rgba(212, 167, 44, 0.12);
+  border: 1px solid rgba(212, 167, 44, 0.35);
+  border-radius: 50px;
+  padding: 0.4rem 1.1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
-.back-link-btn:hover {
-  opacity: 1;
+.badge-icon {
+  font-size: 1.1rem;
+}
+
+.badge-label {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-val {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
   color: var(--color-accent);
-}
-
-/* In combined stack layout, adapt components to look like stacked cards */
-.combined-picker-form .form-container {
-  width: 100%;
-  height: auto;
-  min-height: auto;
-  border-radius: 20px;
-  border: 1px solid var(--color-card-border);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  padding: 2.5rem 1.5rem 1.5rem 1.5rem;
+  font-weight: 700;
 }
 
 /* Pinned Map Visualizer */

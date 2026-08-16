@@ -11,17 +11,17 @@
         
         <div class="summary-row">
           <span class="summary-label">Cuisine Chosen</span>
-          <span class="summary-value">{{ appState.selectedCuisine() }}</span>
+          <span class="summary-value">{{ appState.selectedCuisine() || 'Something delicious 🍰' }}</span>
         </div>
 
         <div class="summary-row">
           <span class="summary-label">Meeting Spot</span>
-          <span class="summary-value">{{ appState.place() }}</span>
+          <span class="summary-value">{{ appState.place() || 'A cute surprise spot ☕' }}</span>
         </div>
 
         <div class="summary-row">
           <span class="summary-label">The Big Day</span>
-          <span class="summary-value">{{ appState.selectedDate() | date:'EEEE, MMMM d, y' }}</span>
+          <span class="summary-value">{{ (appState.selectedDate() | date:'EEEE, MMMM d, y') || 'To be decided ✨' }}</span>
         </div>
       </div>
 
@@ -30,7 +30,7 @@
         <span class="envelope-emoji-pulse">✉️</span>
         <h2 class="ready-title">There is a surprise note for you...</h2>
         <p class="ready-subtitle">
-          But before that, let's see how well you know us! You'll need to answer a few questions. Are you ready? 😉
+          Before you can unlock it, let's see how well you know us! Answer 3 little questions. Are you ready? 😉
         </p>
         
         <button class="ready-btn" (click)="startQuiz()">
@@ -45,9 +45,9 @@
     <div class="quiz-card">
       <div class="dragon-accent">🐉</div>
       
-      <h1 class="quiz-title">🐉 Journey Checkpoint</h1>
+      <h2 class="quiz-title">Journey Checkpoint</h2>
       <p class="quiz-subtitle">
-        Type the correct answers to unlock the secret note! ❤️
+        Type the answers to unlock Manish's secret letter! ❤️
       </p>
 
       <!-- Hearts Progress Indicator (3 Hearts) -->
@@ -67,7 +67,7 @@
       @if (showPhotoUpload()) {
         <!-- Photo Upload Panel -->
         <div class="photo-upload-container">
-          <h2 class="photo-prompt-title">issi baat pe ek photo bej do mujhe aapki plij!😩😂</h2>
+          <h2 class="photo-prompt-title">issi baat pe ek photo bej do mujhe aapki plij! 😩😂</h2>
           
           <div class="photo-uploader-box">
             @if (photoPreviewUrl()) {
@@ -111,7 +111,7 @@
       } @else {
         <!-- Standard Quiz Input Form -->
         <div class="question-container">
-          <h2 class="question-text">{{ questions[currentQuestionIndex()].text }}</h2>
+          <h3 class="question-text">{{ questions[currentQuestionIndex()].text }}</h3>
           
           <div class="input-wrapper" [class.shake]="isShaking()" [class.correct]="isCorrectAnswerSelected()">
             <input 
@@ -153,7 +153,7 @@
   @else {
     <!-- Step 2: All questions answered correctly, transition to next stage -->
     <div class="completion-container">
-      <h1 class="mission-title anim-mission">✨ Mission Complete</h1>
+      <h2 class="mission-title anim-mission">✨ Mission Complete</h2>
 
       <div class="hearts-progress final-glow" [class.glow]="glowHearts()">
         @for (heart of [0, 1, 2]; track heart) {
@@ -162,11 +162,11 @@
       </div>
 
       <p class="checkpoint-passed-text">
-        The checkpoint is open! But before you get that note, tell me a few things about us... 😉🐉🐺💜
+        Checkpoint unlocked! Your secret note is ready to be opened... 🐉✉️💜
       </p>
 
       <button class="unlock-surprise-btn" (click)="proceedToNextStage()">
-        Unlock Surprise Note 🎁➡️
+        Unlock Secret Note ✉️➡️
       </button>
     </div>
   }
