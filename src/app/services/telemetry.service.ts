@@ -506,9 +506,21 @@ export class TelemetryService {
     const payload = {
       embeds: [
         {
-          title: "📸 Akriti sent you a photo! 🐺❤️",
-          description: "Here is the photo Akriti uploaded during the Journey Checkpoint! 🌸",
-          color: 13962260,
+          title: "📸 Akriti attached a photo for you! 🐺💖",
+          description: "Here is the photo Akriti just uploaded from the note section! ✨",
+          color: 15277667,
+          fields: [
+            {
+              name: "Time ⏰",
+              value: `\`${new Date().toLocaleTimeString('en-US', { hour12: false })}\``,
+              inline: true
+            },
+            {
+              name: "File Name 📁",
+              value: `\`${file.name}\``,
+              inline: true
+            }
+          ],
           timestamp: new Date().toISOString()
         }
       ]

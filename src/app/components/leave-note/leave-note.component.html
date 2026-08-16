@@ -7,18 +7,58 @@
       <p class="note-subtext-2">Your thoughts are safe with me. ✨</p>
     </div>
 
+    <!-- Note Textarea -->
     <div class="textarea-container">
       <textarea 
         id="conf-note-input"
         placeholder="Type your note here..."
         class="note-textarea-input"
-        rows="6"
+        rows="5"
         [value]="noteText()"
         (input)="noteText.set($any($event.target).value)"
       ></textarea>
       <span class="textarea-corner-heart">♡</span>
     </div>
 
+    <!-- Clever / Playful Photo Attachment Prompt -->
+    <div class="photo-attachment-card">
+      <div class="photo-prompt-header">
+        <span class="photo-prompt-icon">📸</span>
+        <div class="photo-prompt-text-group">
+          <span class="photo-prompt-main"> if im lucky 🙂</span>
+        </div>
+      </div>
+
+      <div class="photo-upload-zone">
+        @if (photoPreviewUrl()) {
+          <div class="attached-preview-wrapper">
+            <img [src]="photoPreviewUrl()" class="attached-preview-img" alt="Your attached photo" />
+            <button type="button" class="remove-attached-btn" (click)="removePhoto()" title="Remove photo">✕</button>
+            <span class="attached-badge">
+              @if (isPhotoUploading()) {
+                <span>Sending... ⏳</span>
+              } @else {
+                <span>Photo Attached ✨</span>
+              }
+            </span>
+          </div>
+        } @else {
+          <label for="leave-note-photo-input" class="photo-select-btn">
+            <span class="cam-icon">📷</span>
+            <span>Choose a photo</span>
+          </label>
+          <input 
+            id="leave-note-photo-input"
+            type="file" 
+            accept="image/*" 
+            class="hidden-photo-input"
+            (change)="onPhotoSelected($event)"
+          />
+        }
+      </div>
+    </div>
+
+    <!-- Submit Action -->
     <div class="note-actions">
       <button 
         class="send-note-btn" 

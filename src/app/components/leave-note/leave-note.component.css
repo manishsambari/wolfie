@@ -90,7 +90,7 @@
   transition: all 0.3s ease;
   width: 100%;
   resize: vertical;
-  min-height: 140px;
+  min-height: 120px;
   box-sizing: border-box;
   line-height: 1.6;
 }
@@ -115,6 +115,151 @@
   pointer-events: none;
 }
 
+/* ==========================================================================
+   Photo Attachment Card (Sweet & Romantic)
+   ========================================================================== */
+.photo-attachment-card {
+  background: rgba(20, 2, 4, 0.6);
+  border: 1px dashed rgba(212, 167, 44, 0.35);
+  border-radius: 18px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.photo-prompt-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.photo-prompt-icon {
+  font-size: 1.6rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.photo-prompt-text-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.photo-prompt-main {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--color-headline);
+}
+
+.photo-prompt-sub {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--color-secondary);
+  font-style: italic;
+}
+
+.photo-upload-zone {
+  width: 100%;
+}
+
+.photo-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(212, 167, 44, 0.1);
+  border: 1px solid rgba(212, 167, 44, 0.3);
+  border-radius: 12px;
+  padding: 0.65rem 1rem;
+  color: var(--color-headline);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.photo-select-btn:hover {
+  background: rgba(212, 167, 44, 0.2);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.cam-icon {
+  font-size: 1.1rem;
+}
+
+.hidden-photo-input {
+  display: none;
+}
+
+/* Attached Photo Preview */
+.attached-preview-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 160px;
+  margin: 0 auto;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1.5px solid var(--color-accent);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  animation: popIn 0.35s ease-out;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.attached-preview-img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.remove-attached-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(20, 2, 4, 0.85);
+  border: 1px solid var(--color-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.remove-attached-btn:hover {
+  background: #f44336;
+  border-color: #f44336;
+  transform: scale(1.1);
+}
+
+.attached-badge {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(20, 2, 4, 0.8);
+  font-family: var(--font-body);
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  padding: 0.2rem 0;
+  text-align: center;
+}
+
+/* Note Action Buttons */
 .note-actions {
   display: flex;
   justify-content: center;
