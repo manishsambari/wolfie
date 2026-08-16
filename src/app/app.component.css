@@ -5,7 +5,7 @@
   width: 100%;
   min-height: 100vh;
   position: relative;
-  padding: 6rem 1rem 2rem 1rem; /* Added top padding to clear floating steps bar */
+  padding: 2rem 1rem 6rem 1rem; /* Clear floating bottom dock */
   margin: 0;
   overflow-x: hidden;
   box-sizing: border-box;
@@ -21,25 +21,11 @@
   z-index: 10;
 }
 
-.combined-picker-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-  padding: 1.5rem 1rem; /* Padding for the scrollable multi-card stage on mobile */
-  box-sizing: border-box;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
 @media (min-width: 600px) {
   .app-layout {
-    padding: 7rem 1rem 3rem 1rem; /* Adjust padding on desktop as well */
+    padding: 2.5rem 1rem 6.5rem 1rem;
   }
   .stage-container {
     max-width: 600px;
-  }
-  .combined-picker-form {
-    padding: 0;
   }
 }

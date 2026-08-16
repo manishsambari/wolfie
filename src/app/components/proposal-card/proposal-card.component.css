@@ -63,7 +63,7 @@
 
 .text-content {
   position: absolute;
-  top: 6.5rem; /* Clear the steps bar on mobile */
+  top: 7%;
   left: 5%;
   right: 5%;
   text-align: center;
@@ -181,6 +181,6 @@
     font-size: 2.5rem;
   }
   .text-content {
-    top: 7.5rem; /* Spacious positioning on desktop */
+    top: 8%;
   }
 }

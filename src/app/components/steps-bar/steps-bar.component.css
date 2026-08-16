@@ -1,45 +1,53 @@
 .steps-nav-container {
   position: fixed;
-  top: 1.5rem;
+  bottom: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
-  width: 90%;
-  max-width: 560px;
-  padding: 0.75rem 1.25rem;
-  background: rgba(37, 5, 9, 0.75);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(212, 167, 44, 0.25);
+  width: auto;
+  max-width: 92%;
+  padding: 0.45rem 0.85rem;
+  background: rgba(28, 4, 7, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(212, 167, 44, 0.35);
   border-radius: 50px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 
-              0 0 15px rgba(212, 167, 44, 0.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.65), 
+              0 0 20px rgba(212, 167, 44, 0.15);
   z-index: 1000;
   box-sizing: border-box;
+  animation: slideUpDock 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slideUpDock {
+  0% { opacity: 0; transform: translate(-50%, 40px); }
+  100% { opacity: 1; transform: translate(-50%, 0); }
 }
 
 .steps-wrapper {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 0.4rem;
   position: relative;
-  width: 100%;
 }
 
 .progress-line-bg {
   position: absolute;
-  top: 19px; /* Centered relative to the 38px height icon */
-  left: 5%;
-  right: 5%;
-  height: 3px;
-  background: rgba(245, 232, 216, 0.12);
+  top: 50%;
+  left: 15px;
+  right: 15px;
+  height: 2px;
+  background: rgba(245, 232, 216, 0.1);
+  transform: translateY(-50%);
   z-index: 1;
   border-radius: 2px;
+  pointer-events: none;
 }
 
 .progress-line-active {
   height: 100%;
   background: linear-gradient(90deg, var(--color-accent) 0%, #ffdf7a 100%);
-  box-shadow: 0 0 10px rgba(212, 167, 44, 0.6);
+  box-shadow: 0 0 8px rgba(212, 167, 44, 0.6);
   transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 2px;
 }
@@ -56,9 +64,7 @@
   z-index: 2;
   outline: none;
   position: relative;
-  transition: all 0.3s ease;
-  min-width: 36px;
-  flex: 1;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .step-icon-outer {
@@ -66,92 +72,124 @@
   height: 36px;
   border-radius: 50%;
   background: rgba(37, 5, 9, 0.95);
-  border: 2px solid rgba(245, 232, 216, 0.25);
+  border: 1.5px solid rgba(245, 232, 216, 0.22);
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .step-emoji {
-  font-size: 1.2rem;
-  transition: transform 0.3s ease;
+  font-size: 1.15rem;
+  transition: transform 0.25s ease;
 }
 
-.step-label {
+/* Tooltip on hover */
+.dock-tooltip {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+  background: rgba(20, 2, 4, 0.95);
+  border: 1px solid rgba(212, 167, 44, 0.4);
+  border-radius: 8px;
+  padding: 0.25rem 0.6rem;
   font-family: var(--font-body);
-  font-size: 0.7rem;
-  font-weight: 500;
-  color: var(--color-text-muted);
-  margin-top: 0.35rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-headline);
   white-space: nowrap;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.03em;
+}
+
+.dock-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 4px;
+  border-style: solid;
+  border-color: rgba(20, 2, 4, 0.95) transparent transparent transparent;
 }
 
 /* Hover State */
 .step-item:hover .step-icon-outer {
-  transform: scale(1.15) translateY(-2px);
+  transform: translateY(-6px) scale(1.18);
   border-color: var(--color-accent);
-  box-shadow: 0 6px 15px rgba(212, 167, 44, 0.25);
+  box-shadow: 0 8px 20px rgba(212, 167, 44, 0.35);
 }
 
-.step-item:hover .step-label {
-  color: var(--color-headline);
+.step-item:hover .dock-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* Active State */
 .step-item.active .step-icon-outer {
-  transform: scale(1.2) translateY(-3px);
+  transform: translateY(-4px) scale(1.15);
   border-color: var(--color-accent);
-  background: radial-gradient(circle, #4d101a 0%, var(--color-bg-start) 100%);
-  box-shadow: 0 0 15px rgba(212, 167, 44, 0.6),
-              0 6px 20px rgba(0, 0, 0, 0.4);
+  background: radial-gradient(circle, #55121e 0%, var(--color-bg-start) 100%);
+  box-shadow: 0 0 15px rgba(212, 167, 44, 0.65),
+              0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-.step-item.active .step-label {
-  color: var(--color-accent);
-  font-weight: 700;
-  text-shadow: 0 0 8px rgba(212, 167, 44, 0.3);
+.active-dot {
+  position: absolute;
+  bottom: -5px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+  animation: pulseDot 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 12px var(--color-accent); }
 }
 
 /* Completed State */
 .step-item.completed .step-icon-outer {
   border-color: var(--color-accent);
   background: rgba(212, 167, 44, 0.1);
-  box-shadow: 0 4px 10px rgba(212, 167, 44, 0.15);
 }
 
-.step-item.completed .step-label {
-  color: var(--color-secondary);
-}
-
-/* Responsive adjustments */
+/* Responsive Mobile Adjustments */
 @media (max-width: 480px) {
   .steps-nav-container {
-    top: 1rem;
-    padding: 0.6rem 0.8rem;
+    bottom: 1rem;
+    padding: 0.35rem 0.55rem;
     border-radius: 40px;
+    max-width: 95%;
   }
-  
+
+  .steps-wrapper {
+    gap: 0.25rem;
+  }
+
   .step-icon-outer {
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
   }
-  
-  .progress-line-bg {
-    top: 16px; /* Centered relative to 32px height icon */
-    left: 8%;
-    right: 8%;
-  }
-  
+
   .step-emoji {
-    font-size: 1.05rem;
+    font-size: 1rem;
   }
-  
-  .step-label {
-    display: none; /* Hide labels on mobile to avoid overcrowding */
+
+  .dock-tooltip {
+    display: none; /* Hide tooltips on mobile touch */
+  }
+
+  .active-dot {
+    bottom: -4px;
+    width: 4px;
+    height: 4px;
   }
 }

@@ -1,4 +1,4 @@
-<nav class="steps-nav-container">
+<nav class="steps-nav-container" aria-label="Section navigation dock">
   <div class="progress-line-bg">
     <div class="progress-line-active" [style.width.%]="(appState.currentStage() / (steps.length - 1)) * 100"></div>
   </div>
@@ -12,10 +12,13 @@
         (click)="navigateToStage(step.stage)"
         [attr.aria-label]="'Go to step ' + step.label"
       >
+        <span class="dock-tooltip">{{ step.label }}</span>
         <div class="step-icon-outer">
           <span class="step-emoji">{{ step.emoji }}</span>
         </div>
-        <span class="step-label">{{ step.label }}</span>
+        @if (appState.currentStage() === step.stage) {
+          <span class="active-dot"></span>
+        }
       </button>
     }
   </div>
